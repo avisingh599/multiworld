@@ -186,6 +186,10 @@ class Point2DEnv(MultitaskEnv, Serializable):
         self._position = position
         self._target_position = goal
 
+    def enable_render(self):
+        self.render_onscreen = True
+        self.drawer = None
+
     def render(self, close=False):
         if close:
             self.drawer = None

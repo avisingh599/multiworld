@@ -31,9 +31,7 @@ class SawyerPushAndReachXYZEnv(MultitaskEnv, SawyerXYZEnv):
             init_puck_z=0.02,
             init_hand_xyz=(0, 0.4, 0.07),
 
-            num_resets_before_puck_reset=1,
-            num_resets_before_hand_reset=1,
-
+            reset_free=False,
             xml_path='sawyer_xyz/sawyer_push_puck.xml',
             **kwargs
     ):
@@ -95,8 +93,7 @@ class SawyerPushAndReachXYZEnv(MultitaskEnv, SawyerXYZEnv):
         self.init_puck_z = init_puck_z
         self.init_hand_xyz = np.array(init_hand_xyz)
         self._set_puck_xy(self.sample_puck_xy())
-        self.num_resets_before_puck_reset = num_resets_before_puck_reset
-        self.num_resets_before_hand_reset = num_resets_before_hand_reset
+        self.reset_free = reset_free
         self.reset_counter = 0
         self.puck_space = Box(self.puck_low, self.puck_high, dtype=np.float32)
         self.reset()
@@ -227,15 +224,14 @@ class SawyerPushAndReachXYZEnv(MultitaskEnv, SawyerXYZEnv):
         self.set_state(qpos, qvel)
 
     def reset_model(self):
-        if self.reset_counter % self.num_resets_before_hand_reset == 0:
-            self._reset_hand()
-        if self.reset_counter % self.num_resets_before_puck_reset == 0:
+        self._reset_hand()
+        if not self.reset_free:
             self._set_puck_xy(self.sample_puck_xy())
 
         if not (self.puck_space.contains(self.get_puck_pos()[:2])):
             self._set_puck_xy(self.sample_puck_xy())
 
-        goal = self.sample_goal()
+        goal = self.sample_valid_goal()
         self.set_goal(goal)
         self.reset_counter += 1
         self.reset_mocap_welds()
@@ -285,6 +281,18 @@ class SawyerPushAndReachXYZEnv(MultitaskEnv, SawyerXYZEnv):
         self._set_puck_xy(puck_goal)
         self.sim.forward()
 
+    def sample_valid_goal(self):
+        goal = self.sample_goal()
+        hand_goal_xy = goal['state_desired_goal'][:2]
+        puck_goal_xy = goal['state_desired_goal'][3:]
+        dist = np.linalg.norm(hand_goal_xy-puck_goal_xy)
+        while(dist<=.07):
+            goal = self.sample_goal()
+            hand_goal_xy = goal['state_desired_goal'][:2]
+            puck_goal_xy = goal['state_desired_goal'][3:]
+            dist = np.linalg.norm(hand_goal_xy - puck_goal_xy)
+        return goal
+
     def sample_goals(self, batch_size):
         if self.fix_goal:
             goals = np.repeat(
@@ -328,6 +336,8 @@ class SawyerPushAndReachXYZEnv(MultitaskEnv, SawyerXYZEnv):
             r = -puck_distances
         elif self.reward_type == 'puck_success':
             r = -(puck_distances < self.indicator_threshold).astype(float)
+        elif self.reward_type == 'hand_and_puck_distance':
+            r = -(puck_distances + hand_distances)
         elif self.reward_type == 'state_distance':
             r = -np.linalg.norm(
                 achieved_goals - desired_goals,

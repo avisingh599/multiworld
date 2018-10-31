@@ -2,7 +2,7 @@
 <mujoco>
 	<include file="shared_config.xml"></include>
 	<worldbody>
-		<include file="sawyer_xyz_base.xml"></include>
+		<include file="sawyer_xyz_base_pusher.xml"></include>
         <body name="puck" pos="0 0 .1">
             <joint name="puckjoint" type="free" limited='false' damping="1" armature="0" />
             <inertial pos="0 0 0" mass=".1" diaginertia=".1 .1 .1"/>

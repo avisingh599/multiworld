@@ -51,7 +51,7 @@ char_to_action = {
 import gym
 import multiworld
 import pygame
-env = SawyerPushAndReachXYEnv()
+env = SawyerPushAndReachXYEnv(reset_free=True)
 NDIM = env.action_space.low.size
 lock_action = False
 obs = env.reset()
@@ -83,7 +83,9 @@ while True:
                 action[:3] = new_action[:3]
             else:
                 action = np.zeros(3)
-    env.step(action[:2])
+    # env.step(action[:2])
+    goal = env.sample_valid_goal()
+    env.set_to_goal(goal)
     env.render()
     if done:
         obs = env.reset()

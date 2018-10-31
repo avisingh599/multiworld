@@ -188,7 +188,7 @@ def register_custom_envs():
         entry_point='multiworld.envs.mujoco.sawyer_xyz'
                     '.sawyer_door_hook:SawyerDoorHookEnv',
         tags={
-            'git-commit-hash': 'ffdb56e',
+            'git-commit-hash': '15b48d5',
             'author': 'murtaza',
         },
         kwargs=dict(
@@ -208,7 +208,7 @@ def register_custom_envs():
         entry_point='multiworld.envs.mujoco.sawyer_xyz'
                     '.sawyer_door_hook:SawyerDoorHookEnv',
         tags={
-            'git-commit-hash': 'ffdb56e',
+            'git-commit-hash': '15b48d5',
             'author': 'murtaza',
         },
         kwargs=dict(

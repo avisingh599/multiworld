@@ -104,7 +104,7 @@ Usage:
                                 <body name="right_l5" pos="0 0.031 0.275" quat="0.707107 -0.707107 0 0">
                                     <inertial pos="0.0061133 -0.023697 0.076416" quat="0.404076 0.9135 0.0473125 0.00158335" mass="1.5625" diaginertia="0.00474131 0.00422857 0.00190672" />
                                     <joint name="right_j5" pos="0 0 0" axis="0 0 1" limited="true" range="-2.9761 2.9761" damping="10"/>
-                                    <geom type="mesh" contype="0" conaffinity="0" group="1" rgba="0.5 0.1 0.1 1" mesh="l5" />
+                                    <geom type="mesh" contype="2" conaffinity="2" group="1" rgba="0.5 0.1 0.1 1" mesh="l5" />
                                     <geom size="0.06" pos="0 0 0.1" rgba="0.5 0.1 0.1 0" />
                                     <body name="right_hand_camera" pos="0.039552 -0.033 0.0695" quat="0.707107 0 0.707107 0">
                                         <inertial pos="0.039552 -0.033 0.0695" quat="0.707107 0 0.707107 0" mass="0" diaginertia="0 0 0" />
@@ -115,7 +115,7 @@ Usage:
                                     <body name="right_l6" pos="0 -0.11 0.1053" quat="0.0616248 0.06163 -0.704416 0.704416">
                                         <inertial pos="-8.0726e-06 0.0085838 -0.0049566" quat="0.479044 0.515636 -0.513069 0.491322" mass="0.3292" diaginertia="0.000360258 0.000311068 0.000214974" />
                                         <joint name="right_j6" pos="0 0 0" axis="0 0 1" limited="true" range="-4.7124 4.7124" damping="10"/>
-                                        <geom type="mesh" contype="4" conaffinity="2" group="1" rgba="0.5 0.1 0.1 1" mesh="l6" />
+                                        <geom type="mesh" contype="2" conaffinity="2" group="1" rgba="0.5 0.1 0.1 1" mesh="l6" />
                                         <geom size="0.055 0.025" pos="0 0.015 -0.01" type="cylinder" rgba="0.5 0.1 0.1 0" />
                                         <body name="right_hand" pos="0 0 0.0245" quat="0.707107 0 0 0.707107">
                                             <inertial pos="1e-08 1e-08 1e-08" quat="0.820473 0.339851 -0.17592 0.424708" mass="1e-08" diaginertia="1e-08 1e-08 1e-08" />
@@ -151,8 +151,8 @@ Usage:
                                     <inertial pos="1e-08 1e-08 1e-08" quat="0.820473 0.339851 -0.17592 0.424708" mass="1e-08" diaginertia="1e-08 1e-08 1e-08" />
                                     <geom size="0.06" pos="0 0.01 0.26"
                                           rgba="0.2 0.2 0.2 0"
-                                          contype="0"
-                                          conaffinity="0"
+                                          contype="2"
+                                          conaffinity="2"
                                     />
                                 </body>
                             </body>
@@ -160,8 +160,8 @@ Usage:
                         <body name="right_l2_2" pos="0 0 0">
                             <inertial pos="1e-08 1e-08 1e-08" quat="0.820473 0.339851 -0.17592 0.424708" mass="1e-08" diaginertia="1e-08 1e-08 1e-08" />
                             <geom size="0.06" pos="0 0 0.26" rgba="0.2 0.2 0.2 0"
-                                  contype="0"
-                                  conaffinity="0"
+                                  contype="2"
+                                  conaffinity="2"
                             />
                         </body>
                     </body>

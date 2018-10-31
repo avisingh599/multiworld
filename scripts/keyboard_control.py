@@ -51,8 +51,7 @@ char_to_action = {
 import gym
 import multiworld
 import pygame
-# env = gym.make('SawyerDoorHookResetFreeEnv-v0')
-env = SawyerDoorHookEnv()
+env = SawyerPushAndReachXYEnv()
 NDIM = env.action_space.low.size
 lock_action = False
 obs = env.reset()
@@ -84,7 +83,7 @@ while True:
                 action[:3] = new_action[:3]
             else:
                 action = np.zeros(3)
-    env.step(action[:3])
+    env.step(action[:2])
     env.render()
     if done:
         obs = env.reset()

@@ -59,7 +59,7 @@ def register_custom_envs():
         entry_point='multiworld.envs.mujoco.sawyer_xyz'
                     '.sawyer_push_and_reach_env:SawyerPushAndReachXYEnv',
         tags={
-            'git-commit-hash': '91fc06b',
+            'git-commit-hash': 'dea1627',
             'author': 'murtaza',
         },
         kwargs=dict(
@@ -81,7 +81,7 @@ def register_custom_envs():
         entry_point='multiworld.envs.mujoco.sawyer_xyz'
                     '.sawyer_push_and_reach_env:SawyerPushAndReachXYEnv',
         tags={
-            'git-commit-hash': '91fc06b',
+            'git-commit-hash': 'dea1627',
             'author': 'murtaza',
         },
         kwargs=dict(
@@ -103,7 +103,7 @@ def register_custom_envs():
         entry_point='multiworld.envs.mujoco.sawyer_xyz'
                     '.sawyer_push_and_reach_env:SawyerPushAndReachXYEnv',
         tags={
-            'git-commit-hash': '91fc06b',
+            'git-commit-hash': 'dea1627',
             'author': 'murtaza',
         },
         kwargs=dict(
@@ -128,7 +128,7 @@ def register_custom_envs():
         entry_point='multiworld.envs.mujoco.sawyer_xyz'
                     '.sawyer_push_and_reach_env:SawyerPushAndReachXYEnv',
         tags={
-            'git-commit-hash': '91fc06b',
+            'git-commit-hash': 'dea1627',
             'author': 'murtaza',
         },
         kwargs=dict(
@@ -150,7 +150,7 @@ def register_custom_envs():
         entry_point='multiworld.envs.mujoco.sawyer_xyz'
                     '.sawyer_push_and_reach_env:SawyerPushAndReachXYEnv',
         tags={
-            'git-commit-hash': '91fc06b',
+            'git-commit-hash': 'dea1627',
             'author': 'murtaza',
         },
         kwargs=dict(

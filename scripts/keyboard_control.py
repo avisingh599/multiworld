@@ -51,7 +51,7 @@ char_to_action = {
 import gym
 import multiworld
 import pygame
-env = gym.make('SawyerPushAndReachEnvHard-v0')
+env = gym.make('SawyerPushAndReachArenaResetFreeEnv-v0')
 NDIM = env.action_space.low.size
 lock_action = False
 obs = env.reset()

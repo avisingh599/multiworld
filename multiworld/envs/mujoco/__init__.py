@@ -52,7 +52,49 @@ def register_custom_envs():
     """
     Pushing tasks, XY, With Reset
     """
+    register(
+        id='SawyerPushAndReachArenaEnv-v0',
+        entry_point='multiworld.envs.mujoco.sawyer_xyz'
+                    '.sawyer_push_and_reach_env:SawyerPushAndReachXYEnv',
+        tags={
+            'git-commit-hash': '91fc06b',
+            'author': 'murtaza',
+        },
+        kwargs=dict(
+            goal_low=(-0.25, 0.3, 0.02, -.2, .4),
+            goal_high=(0.25, 0.875, 0.02, .2, .8),
+            puck_low=(-.4, .2),
+            puck_high=(.4, 1),
+            hand_low=(-0.28, 0.3, 0.05),
+            hand_high=(0.28, 0.9, 0.3),
+            norm_order=2,
+            xml_path='sawyer_xyz/sawyer_push_puck.xml',
+            reward_type='state_distance',
+            reset_free=False,
+        )
+    )
 
+    register(
+        id='SawyerPushAndReachArenaResetFreeEnv-v0',
+        entry_point='multiworld.envs.mujoco.sawyer_xyz'
+                    '.sawyer_push_and_reach_env:SawyerPushAndReachXYEnv',
+        tags={
+            'git-commit-hash': '91fc06b',
+            'author': 'murtaza',
+        },
+        kwargs=dict(
+            goal_low=(-0.25, 0.3, 0.02, -.2, .4),
+            goal_high=(0.25, 0.875, 0.02, .2, .8),
+            puck_low=(-.4, .2),
+            puck_high=(.4, 1),
+            hand_low=(-0.28, 0.3, 0.05),
+            hand_high=(0.28, 0.9, 0.3),
+            norm_order=2,
+            xml_path='sawyer_xyz/sawyer_push_puck.xml',
+            reward_type='state_distance',
+            reset_free=True,
+        )
+    )
 
     """
     Door Hook Env
@@ -146,16 +188,28 @@ def create_image_84_sawyer_reach_xy_env_v0():
         normalize=True,
     )
 
-
-def create_Image48SawyerPushAndReacherXYEnv_v0():
+def create_image_48_sawyer_push_and_reach_arena_env_v0():
     from multiworld.core.image_env import ImageEnv
-    from multiworld.envs.mujoco.cameras import sawyer_pusher_camera_top_down
+    from multiworld.envs.mujoco.cameras import sawyer_pusher_camera_upright_v2
 
-    wrapped_env = gym.make('SawyerPushAndReacherXYEnv-v0')
+    wrapped_env = gym.make('SawyerPushAndReachArenaEnv-v0')
     return ImageEnv(
         wrapped_env,
         48,
-        init_camera=sawyer_pusher_camera_top_down,
+        init_camera=sawyer_pusher_camera_upright_v2,
+        transpose=True,
+        normalize=True,
+    )
+
+def create_image_48_sawyer_push_and_reach_arena_env_reset_free_v0():
+    from multiworld.core.image_env import ImageEnv
+    from multiworld.envs.mujoco.cameras import sawyer_pusher_camera_upright_v2
+
+    wrapped_env = gym.make('SawyerPushAndReachArenaResetFreeEnv-v0')
+    return ImageEnv(
+        wrapped_env,
+        48,
+        init_camera=sawyer_pusher_camera_upright_v2,
         transpose=True,
         normalize=True,
     )

@@ -50,7 +50,78 @@ def register_custom_envs():
     )
 
     """
-    Pushing tasks, XY, With Reset
+    Pushing Tasks, XY
+    
+    """
+
+    register(
+        id='SawyerPushAndReachEnvEasy-v0',
+        entry_point='multiworld.envs.mujoco.sawyer_xyz'
+                    '.sawyer_push_and_reach_env:SawyerPushAndReachXYEnv',
+        tags={
+            'git-commit-hash': '91fc06b',
+            'author': 'murtaza',
+        },
+        kwargs=dict(
+            goal_low=(-0.1, 0.45, 0.02, -.075, .5),
+            goal_high=(0.1, 0.65, 0.02, .075, .65),
+            puck_low=(-.2, .4),
+            puck_high=(.2, .8),
+            hand_low=(-0.15, 0.3, 0.05),
+            hand_high=(0.15, .7, 0.3),
+            norm_order=2,
+            xml_path='sawyer_xyz/sawyer_push_puck.xml',
+            reward_type='state_distance',
+            reset_free=False,
+        )
+    )
+
+    register(
+        id='SawyerPushAndReachEnvMedium-v0',
+        entry_point='multiworld.envs.mujoco.sawyer_xyz'
+                    '.sawyer_push_and_reach_env:SawyerPushAndReachXYEnv',
+        tags={
+            'git-commit-hash': '91fc06b',
+            'author': 'murtaza',
+        },
+        kwargs=dict(
+            goal_low=(-0.175, 0.375, 0.02, -.15, .425),
+            goal_high=(0.175, 0.725, 0.02, .15, .725),
+            puck_low=(-.3, .3),
+            puck_high=(.3, .9),
+            hand_low=(-0.25, 0.4, 0.05),
+            hand_high=(0.25, .8, 0.3),
+            norm_order=2,
+            xml_path='sawyer_xyz/sawyer_push_puck.xml',
+            reward_type='state_distance',
+            reset_free=False,
+        )
+    )
+
+    register(
+        id='SawyerPushAndReachEnvHard-v0',
+        entry_point='multiworld.envs.mujoco.sawyer_xyz'
+                    '.sawyer_push_and_reach_env:SawyerPushAndReachXYEnv',
+        tags={
+            'git-commit-hash': '91fc06b',
+            'author': 'murtaza',
+        },
+        kwargs=dict(
+            goal_low=(-0.25, 0.3, 0.02, -.2, .4),
+            goal_high=(0.25, 0.8, 0.02, .2, .8),
+            puck_low=(-.4, .2),
+            puck_high=(.4, 1),
+            hand_low=(-0.3, 0.25, 0.05),
+            hand_high=(0.3, .95, 0.3),
+            norm_order=2,
+            xml_path='sawyer_xyz/sawyer_push_puck.xml',
+            reward_type='state_distance',
+            reset_free=False,
+        )
+    )
+
+    """
+    Pushing tasks, XY, Arena
     """
     register(
         id='SawyerPushAndReachArenaEnv-v0',
@@ -68,7 +139,7 @@ def register_custom_envs():
             hand_low=(-0.28, 0.3, 0.05),
             hand_high=(0.28, 0.9, 0.3),
             norm_order=2,
-            xml_path='sawyer_xyz/sawyer_push_puck.xml',
+            xml_path='sawyer_xyz/sawyer_push_puck_arena.xml',
             reward_type='state_distance',
             reset_free=False,
         )
@@ -90,7 +161,7 @@ def register_custom_envs():
             hand_low=(-0.28, 0.3, 0.05),
             hand_high=(0.28, 0.9, 0.3),
             norm_order=2,
-            xml_path='sawyer_xyz/sawyer_push_puck.xml',
+            xml_path='sawyer_xyz/sawyer_push_puck_arena.xml',
             reward_type='state_distance',
             reset_free=True,
         )

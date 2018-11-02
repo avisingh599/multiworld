@@ -51,7 +51,20 @@ char_to_action = {
 import gym
 import multiworld
 import pygame
-env = gym.make('SawyerPushAndReachArenaResetFreeEnv-v0')
+# env = gym.make('SawyerPushAndReachEnvEasy-v0')
+env = SawyerPushAndReachXYEnv(
+    goal_low=(-0.15, 0.4, 0.02, -.1, .45),
+    goal_high=(0.15, 0.7, 0.02, .1, .65),
+    puck_low=(-.1, .45),
+    puck_high=(.1, .65),
+    hand_low=(-0.15, 0.4, 0.05),
+    hand_high=(0.15, .7, 0.3),
+    norm_order=2,
+    xml_path='sawyer_xyz/sawyer_push_puck.xml',
+    reward_type='state_distance',
+    reset_free=False,
+    clamp_puck_on_step=True,
+)
 NDIM = env.action_space.low.size
 lock_action = False
 obs = env.reset()
@@ -83,9 +96,9 @@ while True:
                 action[:3] = new_action[:3]
             else:
                 action = np.zeros(3)
-    # env.step(action[:2])
-    goal = env.sample_valid_goal()
-    env.set_to_goal(goal)
+    env.step(action[:2])
+    # goal = env.sample_valid_goal()
+    # env.set_to_goal(goal)
     env.render()
     if done:
         obs = env.reset()

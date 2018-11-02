@@ -33,6 +33,7 @@ class SawyerPushAndReachXYZEnv(MultitaskEnv, SawyerXYZEnv):
 
             reset_free=False,
             xml_path='sawyer_xyz/sawyer_push_puck.xml',
+            clamp_puck_on_step=False,
             **kwargs
     ):
         self.quick_init(locals())
@@ -96,6 +97,7 @@ class SawyerPushAndReachXYZEnv(MultitaskEnv, SawyerXYZEnv):
         self.reset_free = reset_free
         self.reset_counter = 0
         self.puck_space = Box(self.puck_low, self.puck_high, dtype=np.float32)
+        self.clamp_puck_on_step=clamp_puck_on_step
         self.reset()
 
     def viewer_setup(self):
@@ -114,6 +116,10 @@ class SawyerPushAndReachXYZEnv(MultitaskEnv, SawyerXYZEnv):
         u[7] = 1
         self.do_simulation(u)
         self._set_goal_marker(self._state_goal)
+        if self.clamp_puck_on_step:
+            curr_puck_pos = self.get_puck_pos()[:2]
+            curr_puck_pos = np.clip(curr_puck_pos, self.puck_space.low, self.puck_space.high)
+            self._set_puck_xy(curr_puck_pos)
         ob = self._get_obs()
         reward = self.compute_reward(action, ob)
         info = self._get_info()

@@ -34,6 +34,8 @@ class SawyerPushAndReachXYZEnv(MultitaskEnv, SawyerXYZEnv):
             reset_free=False,
             xml_path='sawyer_xyz/sawyer_push_puck.xml',
             clamp_puck_on_step=False,
+
+            puck_radius=.07,
             **kwargs
     ):
         self.quick_init(locals())
@@ -98,6 +100,7 @@ class SawyerPushAndReachXYZEnv(MultitaskEnv, SawyerXYZEnv):
         self.reset_counter = 0
         self.puck_space = Box(self.puck_low, self.puck_high, dtype=np.float32)
         self.clamp_puck_on_step=clamp_puck_on_step
+        self.puck_radius=puck_radius
         self.reset()
 
     def viewer_setup(self):
@@ -292,7 +295,7 @@ class SawyerPushAndReachXYZEnv(MultitaskEnv, SawyerXYZEnv):
         hand_goal_xy = goal['state_desired_goal'][:2]
         puck_goal_xy = goal['state_desired_goal'][3:]
         dist = np.linalg.norm(hand_goal_xy-puck_goal_xy)
-        while(dist<=.07):
+        while(dist<=self.puck_radius):
             goal = self.sample_goal()
             hand_goal_xy = goal['state_desired_goal'][:2]
             puck_goal_xy = goal['state_desired_goal'][3:]

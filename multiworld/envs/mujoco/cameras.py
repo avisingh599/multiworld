@@ -134,7 +134,7 @@ def sawyer_door_env_camera_v0(camera):
 
 
 def sawyer_pusher_camera_upright_v0(camera):
-    camera.distance = .15
+    camera.distance = .2
     camera.lookat[0] = 0
     camera.lookat[1] = 0.85
     camera.lookat[2] = 0.45

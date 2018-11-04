@@ -59,20 +59,21 @@ def register_custom_envs():
         entry_point='multiworld.envs.mujoco.sawyer_xyz'
                     '.sawyer_push_and_reach_env:SawyerPushAndReachXYEnv',
         tags={
-            'git-commit-hash': 'dea1627',
+            'git-commit-hash': 'ddd73dc',
             'author': 'murtaza',
         },
         kwargs=dict(
-            goal_low=(-0.1, 0.45, 0.02, -.1, .45),
-            goal_high=(0.1, 0.65, 0.02, .1, .65),
+            goal_low=(-0.15, 0.4, 0.02, -.1, .45),
+            goal_high=(0.15, 0.7, 0.02, .1, .65),
             puck_low=(-.1, .45),
             puck_high=(.1, .65),
-            hand_low=(-0.1, 0.45, 0.05),
-            hand_high=(0.1, .65, 0.3),
+            hand_low=(-0.15, 0.4, 0.02),
+            hand_high=(0.15, .7, 0.02),
             norm_order=2,
             xml_path='sawyer_xyz/sawyer_push_puck.xml',
             reward_type='state_distance',
             reset_free=False,
+            clamp_puck_on_step=True,
         )
     )
 
@@ -81,20 +82,21 @@ def register_custom_envs():
         entry_point='multiworld.envs.mujoco.sawyer_xyz'
                     '.sawyer_push_and_reach_env:SawyerPushAndReachXYEnv',
         tags={
-            'git-commit-hash': 'dea1627',
+            'git-commit-hash': 'ddd73dc',
             'author': 'murtaza',
         },
         kwargs=dict(
-            goal_low=(-0.175, 0.375, 0.02, -.175, .375),
-            goal_high=(0.175, 0.725, 0.02, .175, .725),
-            puck_low=(-.25, .3),
-            puck_high=(.25, .9),
-            hand_low=(-0.25, 0.3, 0.05),
-            hand_high=(0.25, .9, 0.3),
+            goal_low=(-0.2, 0.35, 0.02, -.15, .4),
+            goal_high=(0.2, 0.75, 0.02, .15, .7),
+            puck_low=(-.15, .4),
+            puck_high=(.15, .7),
+            hand_low=(-0.2, 0.35, 0.05),
+            hand_high=(0.2, .75, 0.3),
             norm_order=2,
             xml_path='sawyer_xyz/sawyer_push_puck.xml',
             reward_type='state_distance',
             reset_free=False,
+            clamp_puck_on_step=True,
         )
     )
 
@@ -103,20 +105,21 @@ def register_custom_envs():
         entry_point='multiworld.envs.mujoco.sawyer_xyz'
                     '.sawyer_push_and_reach_env:SawyerPushAndReachXYEnv',
         tags={
-            'git-commit-hash': 'dea1627',
+            'git-commit-hash': 'ddd73dc',
             'author': 'murtaza',
         },
         kwargs=dict(
-            goal_low=(-0.25, 0.3, 0.02, -.25, .3),
-            goal_high=(0.25, 0.8, 0.02, .25, .8),
-            puck_low=(-.3, .25),
-            puck_high=(.3, .95),
-            hand_low=(-0.3, 0.25, 0.05),
-            hand_high=(0.3, .95, 0.3),
+            goal_low=(-0.25, 0.3, 0.02, -.2, .35),
+            goal_high=(0.25, 0.8, 0.02, .2, .75),
+            puck_low=(-.2, .35),
+            puck_high=(.2, .75),
+            hand_low=(-0.25, 0.3, 0.02),
+            hand_high=(0.25, .8, 0.02),
             norm_order=2,
             xml_path='sawyer_xyz/sawyer_push_puck.xml',
             reward_type='state_distance',
             reset_free=False,
+            clamp_puck_on_step=True,
         )
     )
 

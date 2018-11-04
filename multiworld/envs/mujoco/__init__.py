@@ -170,6 +170,52 @@ def register_custom_envs():
         )
     )
 
+    register(
+        id='SawyerPushAndReachSmallArenaEnv-v0',
+        entry_point='multiworld.envs.mujoco.sawyer_xyz'
+                    '.sawyer_push_and_reach_env:SawyerPushAndReachXYEnv',
+        tags={
+            'git-commit-hash': '7256aaf',
+            'author': 'murtaza',
+        },
+        kwargs=dict(
+            goal_low=(-0.15, 0.4, 0.02, -.1, .5),
+            goal_high=(0.15, 0.75, 0.02, .1, .7),
+            puck_low=(-.3, .25),
+            puck_high=(.3, .9),
+            hand_low=(-0.15, 0.4, 0.05),
+            hand_high=(0.15, .75, 0.3),
+            norm_order=2,
+            xml_path='sawyer_xyz/sawyer_push_puck_small_arena.xml',
+            reward_type='state_distance',
+            reset_free=False,
+            clamp_puck_on_step=False,
+        )
+    )
+
+    register(
+        id='SawyerPushAndReachSmallArenaResetFreeEnv-v0',
+        entry_point='multiworld.envs.mujoco.sawyer_xyz'
+                    '.sawyer_push_and_reach_env:SawyerPushAndReachXYEnv',
+        tags={
+            'git-commit-hash': '7256aaf',
+            'author': 'murtaza',
+        },
+        kwargs=dict(
+            goal_low=(-0.15, 0.4, 0.02, -.1, .5),
+            goal_high=(0.15, 0.75, 0.02, .1, .7),
+            puck_low=(-.3, .25),
+            puck_high=(.3, .9),
+            hand_low=(-0.15, 0.4, 0.05),
+            hand_high=(0.15, .75, 0.3),
+            norm_order=2,
+            xml_path='sawyer_xyz/sawyer_push_puck_small_arena.xml',
+            reward_type='state_distance',
+            reset_free=True,
+            clamp_puck_on_step=False,
+        )
+    )
+
     """
     Door Hook Env
     """

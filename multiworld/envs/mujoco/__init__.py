@@ -261,6 +261,86 @@ def register_custom_envs():
         )
     )
 
+    register(
+        id='SawyerDoorHookEnv-v1',
+        entry_point='multiworld.envs.mujoco.sawyer_xyz'
+                    '.sawyer_door_hook:SawyerDoorHookEnv',
+        tags={
+            'git-commit-hash': 'e8ec59e',
+            'author': 'murtaza',
+        },
+        kwargs=dict(
+            goal_low=(-0.1, 0.45, 0.155, 0),
+            goal_high=(0.05, 0.65, .25, .83),
+            hand_low=(-0.1, 0.45, 0.155),
+            hand_high=(0.05, 0.65, .25),
+            max_angle=.83,
+            xml_path='sawyer_xyz/sawyer_door_pull_hook.xml',
+            reward_type='angle_diff_and_hand_distance',
+            reset_free=False,
+        )
+    )
+
+    register(
+        id='SawyerDoorHookResetFreeEnv-v1',
+        entry_point='multiworld.envs.mujoco.sawyer_xyz'
+                    '.sawyer_door_hook:SawyerDoorHookEnv',
+        tags={
+            'git-commit-hash': 'e8ec59e',
+            'author': 'murtaza',
+        },
+        kwargs=dict(
+            goal_low=(-0.1, 0.45, 0.155, 0),
+            goal_high=(0.05, 0.65, .25, .8),
+            hand_low=(-0.1, 0.45, 0.155),
+            hand_high=(0.05, 0.65, .25),
+            max_angle=.8,
+            xml_path='sawyer_xyz/sawyer_door_pull_hook.xml',
+            reward_type='angle_diff_and_hand_distance',
+            reset_free=True,
+        )
+    )
+
+    register(
+        id='SawyerDoorHookResetFreeEnv-v2',
+        entry_point='multiworld.envs.mujoco.sawyer_xyz'
+                    '.sawyer_door_hook:SawyerDoorHookEnv',
+        tags={
+            'git-commit-hash': 'e8ec59e',
+            'author': 'murtaza',
+        },
+        kwargs=dict(
+            goal_low=(-0.125, 0.45, 0.155, 0),
+            goal_high=(0.075, 0.65, .25, .85),
+            hand_low=(-0.125, 0.45, 0.155),
+            hand_high=(0.075, 0.65, .25),
+            max_angle=.85,
+            xml_path='sawyer_xyz/sawyer_door_pull_hook.xml',
+            reward_type='angle_diff_and_hand_distance',
+            reset_free=True,
+        )
+    )
+
+    register(
+        id='SawyerDoorHookResetFreeEnv-v3',
+        entry_point='multiworld.envs.mujoco.sawyer_xyz'
+                    '.sawyer_door_hook:SawyerDoorHookEnv',
+        tags={
+            'git-commit-hash': 'e8ec59e',
+            'author': 'murtaza',
+        },
+        kwargs=dict(
+            goal_low=(-0.1, 0.45, 0.155, 0),
+            goal_high=(0.05, 0.65, .25, .8),
+            hand_low=(-0.1, 0.425, 0.155),
+            hand_high=(0.05, 0.675, .25),
+            max_angle=.8,
+            xml_path='sawyer_xyz/sawyer_door_pull_hook.xml',
+            reward_type='angle_diff_and_hand_distance',
+            reset_free=True,
+        )
+    )
+
     """
     Pick and Place
     """

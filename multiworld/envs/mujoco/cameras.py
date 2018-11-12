@@ -132,6 +132,24 @@ def sawyer_door_env_camera_v0(camera):
     camera.azimuth = 360
     camera.trackbodyid = -1
 
+def sawyer_door_env_camera_v1(camera):
+    camera.distance = 0.3
+    camera.lookat[0] = -.2
+    camera.lookat[1] = 0.50
+    camera.lookat[2] = 0.55
+    camera.elevation = -60
+    camera.azimuth = 360
+    camera.trackbodyid = -1
+
+def sawyer_door_env_camera_v2(camera):
+    camera.distance = 0.3
+    camera.lookat[0] = -.21
+    camera.lookat[1] = 0.6
+    camera.lookat[2] = 0.65
+    camera.elevation = -65
+    camera.azimuth = 360
+    camera.trackbodyid = -1
+
 
 def sawyer_pusher_camera_upright_v0(camera):
     camera.distance = .2

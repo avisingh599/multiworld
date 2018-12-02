@@ -20,6 +20,7 @@ class SawyerReachXYZEnv(SawyerXYZEnv, MultitaskEnv):
             goal_high=None,
 
             hide_goal_markers=False,
+            reset_mode='fixed',
 
             **kwargs
     ):
@@ -41,6 +42,7 @@ class SawyerReachXYZEnv(SawyerXYZEnv, MultitaskEnv):
         self._state_goal = None
 
         self.hide_goal_markers = hide_goal_markers
+        self.reset_mode = reset_mode
 
         self.action_space = Box(np.array([-1, -1, -1]), np.array([1, 1, 1]))
         self.observation_space = Box(self.hand_low, self.hand_high)
@@ -53,6 +55,10 @@ class SawyerReachXYZEnv(SawyerXYZEnv, MultitaskEnv):
             ('state_desired_goal', self.hand_space),
             ('state_achieved_goal', self.hand_space),
         ])
+        temp = self.reset_mode
+        self.reset_mode = 'fixed'
+        self.reset()
+        self.reset_mode = temp
 
     def step(self, action):
         self.set_xyz_action(action)
@@ -121,10 +127,21 @@ class SawyerReachXYZEnv(SawyerXYZEnv, MultitaskEnv):
         return self._get_obs()
 
     def _reset_hand(self):
-        for _ in range(10):
-            self.data.set_mocap_pos('mocap', np.array([0, 0.5, 0.02]))
-            self.data.set_mocap_quat('mocap', np.array([1, 0, 1, 0]))
-            self.do_simulation(None, self.frame_skip)
+        if self.reset_mode == 'fixed':
+            reset_pos = [0, 0.5, 0.02]
+            for _ in range(10):
+                self.data.set_mocap_pos('mocap', np.array(reset_pos))
+                self.data.set_mocap_quat('mocap', np.array([1, 0, 1, 0]))
+                self.do_simulation(None, self.frame_skip)
+        elif self.reset_mode == 'random':
+            reset_pos = [0, 0.5, 0.02]
+            for _ in range(10):
+                self.data.set_mocap_pos('mocap', np.array(reset_pos))
+                self.data.set_mocap_quat('mocap', np.array([1, 0, 1, 0]))
+                self.do_simulation(None, self.frame_skip)
+            self.set_to_goal(self.sample_goal())
+        else:
+            raise NotImplementedError()
 
     def reset(self, resample_on_reset=True):
         self.sim.reset()

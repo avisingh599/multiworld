@@ -51,7 +51,7 @@ class SawyerReachXYZEnv(SawyerXYZEnv, MultitaskEnv):
             ('proprio_desired_goal', self.hand_space),
             ('proprio_achieved_goal', self.hand_space),
         ])
-ss        temp = self.reset_mode
+        temp = self.reset_mode
         self.reset_mode = 'fixed'
         self.reset()
         self.reset_mode = temp

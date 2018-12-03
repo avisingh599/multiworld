@@ -17,16 +17,19 @@ class ProxyEnv(Serializable):
             return None
         return getattr(self._wrapped_env, attrname)
 
+    def __str__(self):
+        return '{}({})'.format(type(self).__name__, self.wrapped_env)
+
+
 class NormalizedBoxEnv(ProxyEnv, Serializable):
     """
     Normalize action to in [-1, 1].
 
-    Optionally normalize observations and scale reward.
+    Optionally normalize observations.
     """
     def __init__(
             self,
             env,
-            reward_scale=1.,
             obs_means=None,
             obs_stds=None,
             obs_to_normalize_keys=['observation'],
@@ -39,7 +42,6 @@ class NormalizedBoxEnv(ProxyEnv, Serializable):
         # Or else serialization gets delegated to the wrapped_env. Serialize
         # this env separately from the wrapped_env.
         self._wrapped_env = env
-        self._serializable_initialized = False
         Serializable.quick_init(self, locals())
         ProxyEnv.__init__(self, env)
         self._should_normalize = not (obs_means is None and obs_stds is None)
@@ -61,7 +63,6 @@ class NormalizedBoxEnv(ProxyEnv, Serializable):
                 obs_stds = dict()
                 for key in self.obs_to_normalize_keys:
                     obs_stds[key] = np.array(obs_stds[key])
-        self._reward_scale = reward_scale
         self._obs_means = obs_means
         self._obs_stds = obs_stds
         ub = np.ones(self._wrapped_env.action_space.shape)
@@ -69,11 +70,6 @@ class NormalizedBoxEnv(ProxyEnv, Serializable):
         self.obs_to_normalize_keys=obs_to_normalize_keys
 
     def estimate_obs_stats(self, obs_batch, override_values=False):
-        if self._obs_means is not None and not override_values:
-            raise Exception("Observation mean and std already set. To "
-                            "override, set override_values to True.")
-        # self._obs_means = np.mean(obs_batch, axis=0)
-        # self._obs_stds = np.std(obs_batch, axis=0)
         raise NotImplementedError()
 
     def _apply_normalize_obs(self, obs):
@@ -85,14 +81,12 @@ class NormalizedBoxEnv(ProxyEnv, Serializable):
         # Add these explicitly in case they were modified
         d["_obs_means"] = self._obs_means
         d["_obs_stds"] = self._obs_stds
-        d["_reward_scale"] = self._reward_scale
         return d
 
     def __setstate__(self, d):
         Serializable.__setstate__(self, d)
         self._obs_means = d["_obs_means"]
         self._obs_stds = d["_obs_stds"]
-        self._reward_scale = d["_reward_scale"]
 
     def step(self, action):
         lb = self._wrapped_env.action_space.low
@@ -103,7 +97,7 @@ class NormalizedBoxEnv(ProxyEnv, Serializable):
         next_obs, reward, done, info = wrapped_step
         if self._should_normalize:
             next_obs = self._apply_normalize_obs(next_obs)
-        return next_obs, reward * self._reward_scale, done, info
+        return next_obs, reward, done, info
 
     def __str__(self):
         return "Normalized: %s" % self._wrapped_env

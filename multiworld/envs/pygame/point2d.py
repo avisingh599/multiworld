@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 import numpy as np
 from gym import spaces
 from pygame import Color
@@ -5,6 +7,10 @@ from pygame import Color
 from multiworld.core.image_env import ImageEnv
 from multiworld.core.multitask_env import MultitaskEnv
 from multiworld.core.serializable import Serializable
+from multiworld.envs.env_util import (
+    get_stat_in_paths,
+    create_stats_ordered_dict,
+)
 from multiworld.envs.pygame.pygame_viewer import PygameViewer
 from multiworld.envs.pygame.walls import VerticalWall, HorizontalWall
 
@@ -21,14 +27,21 @@ class Point2DEnv(MultitaskEnv, Serializable):
             render_onscreen=True,
             render_size=84,
             reward_type="dense",
-            target_radius = 0.5,
-            boundary_dist = 4,
-            ball_radius = 0.25,
-            walls = [],
+            target_radius=0.5,
+            boundary_dist=4,
+            ball_radius=0.25,
+            walls=None,
             fixed_goal=None,
+            randomize_position_on_reset=True,
+            images_are_rgb=False,  # else black and white
             **kwargs
     ):
-        print("WARNING, ignoring kwargs:", kwargs)
+        if walls is None:
+            walls = []
+        if len(kwargs) > 0:
+            import logging
+            LOGGER = logging.getLogger(__name__)
+            LOGGER.log(logging.WARNING, "WARNING, ignoring kwargs:", kwargs)
         self.quick_init(locals())
         self.render_dt_msec = render_dt_msec
         self.action_l2norm_penalty = action_l2norm_penalty
@@ -40,12 +53,14 @@ class Point2DEnv(MultitaskEnv, Serializable):
         self.ball_radius = ball_radius
         self.walls = walls
         self.fixed_goal = fixed_goal
+        self.randomize_position_on_reset = randomize_position_on_reset
+        self.images_are_rgb = images_are_rgb
 
         self._max_episode_steps = 50
         self.max_target_distance = self.boundary_dist - self.target_radius
 
         self._target_position = None
-        self._position = None
+        self._position = np.zeros((2))
 
         u = np.ones(2)
         self.action_space = spaces.Box(-u, u, dtype=np.float32)
@@ -76,7 +91,9 @@ class Point2DEnv(MultitaskEnv, Serializable):
             a_min=-self.boundary_dist,
             a_max=self.boundary_dist,
         )
-        distance_to_target = np.linalg.norm(self._position - self._target_position)
+        distance_to_target = np.linalg.norm(
+            self._position - self._target_position
+        )
         is_success = distance_to_target < self.target_radius
 
         ob = self._get_obs()
@@ -101,14 +118,17 @@ class Point2DEnv(MultitaskEnv, Serializable):
         self._target_position = np.random.uniform(
             size=2, low=-self.max_target_distance, high=self.max_target_distance
         )
-        self._position = np.random.uniform(
-            size=2, low=-self.boundary_dist, high=self.boundary_dist
-        )
+        if self.randomize_position_on_reset:
+            self._position = np.random.uniform(
+                size=2, low=-self.boundary_dist, high=self.boundary_dist
+            )
         return self._get_obs()
 
-    def seed(self, s):
-        """Do nothing for seed"""
-        pass
+    def _position_inside_wall(self, pos):
+        for wall in self.walls:
+            if wall.contains_point(pos):
+                return True
+        return False
 
     def _get_obs(self):
         return dict(
@@ -121,7 +141,7 @@ class Point2DEnv(MultitaskEnv, Serializable):
         )
 
     def compute_rewards(self, actions, obs):
-        achieved_goals = obs['state_achieved_goal']
+        achieved_goals = obs['state_observation']
         desired_goals = obs['state_desired_goal']
         d = np.linalg.norm(achieved_goals - desired_goals, axis=-1)
         if self.reward_type == "sparse":
@@ -129,11 +149,38 @@ class Point2DEnv(MultitaskEnv, Serializable):
         if self.reward_type == "dense":
             return -d
 
+    def get_diagnostics(self, paths, prefix=''):
+        statistics = OrderedDict()
+        for stat_name in [
+            'distance_to_target',
+            'is_success',
+        ]:
+            stat_name = stat_name
+            stat = get_stat_in_paths(paths, 'env_infos', stat_name)
+            statistics.update(create_stats_ordered_dict(
+                '%s%s' % (prefix, stat_name),
+                stat,
+                always_show_all_stats=True,
+                ))
+            statistics.update(create_stats_ordered_dict(
+                'Final %s%s' % (prefix, stat_name),
+                [s[-1] for s in stat],
+                always_show_all_stats=True,
+                ))
+        return statistics
+
     def get_goal(self):
         return {
             'desired_goal': self._target_position.copy(),
             'state_desired_goal': self._target_position.copy(),
         }
+
+    def _sample_position(self, low, high, realistic=True):
+        pos = np.random.uniform(low, high)
+        if realistic:
+            while self._position_inside_wall(pos) is True:
+                pos = np.random.uniform(low, high)
+        return pos
 
     def sample_goals(self, batch_size):
         if not self.fixed_goal is None:
@@ -143,11 +190,16 @@ class Point2DEnv(MultitaskEnv, Serializable):
                 0
             )
         else:
-            goals = np.random.uniform(
-                self.obs_range.low,
-                self.obs_range.high,
-                size=(batch_size, self.obs_range.low.size),
-            )
+            goals = np.zeros((batch_size, self.obs_range.low.size))
+            for b in range(batch_size):
+                goals[b, :] = self._sample_position(self.obs_range.low,
+                                         self.obs_range.high,)
+                                         # realistic=self.sample_realistic_goals)
+            # goals = np.random.uniform(
+            #     self.obs_range.low,
+            #     self.obs_range.high,
+            #     size=(batch_size, self.obs_range.low.size),
+            # )
         return {
             'desired_goal': goals,
             'state_desired_goal': goals,
@@ -159,18 +211,31 @@ class Point2DEnv(MultitaskEnv, Serializable):
 
     """Functions for ImageEnv wrapper"""
 
-    def get_image(self):
+    def get_image(self, width=None, height=None):
         """Returns a black and white image"""
+        if width is not None:
+            if width != height:
+                raise NotImplementedError()
+            if width != self.render_size:
+                self.drawer = PygameViewer(
+                    screen_width=width,
+                    screen_height=height,
+                    x_bounds=(-self.boundary_dist, self.boundary_dist),
+                    y_bounds=(-self.boundary_dist, self.boundary_dist),
+                    render_onscreen=self.render_onscreen,
+                )
+                self.render_size = width
         self.render()
         img = self.drawer.get_image()
-        # img = img / 255.0
-        r, g, b = img[:, :, 0], img[:, :, 1], img[:, :, 2]
-        # img = (-r - g + b).flatten() # GREEN ignored for visualization
-        img = (-r + b).flatten()
-        return img
+        if self.images_are_rgb:
+            return img.transpose().flatten()
+        else:
+            r, g, b = img[:, :, 0], img[:, :, 1], img[:, :, 2]
+            img = (-r + b).flatten()
+            return img
 
     def set_to_goal(self, goal_dict):
-        goal = goal_dict["desired_goal"]
+        goal = goal_dict["state_desired_goal"]
         self._position = goal
         self._target_position = goal
 
@@ -215,9 +280,43 @@ class Point2DEnv(MultitaskEnv, Serializable):
                 wall.endpoint2,
                 Color('black'),
             )
+            self.drawer.draw_segment(
+                wall.endpoint2,
+                wall.endpoint3,
+                Color('black'),
+            )
+            self.drawer.draw_segment(
+                wall.endpoint3,
+                wall.endpoint4,
+                Color('black'),
+            )
+            self.drawer.draw_segment(
+                wall.endpoint4,
+                wall.endpoint1,
+                Color('black'),
+            )
 
         self.drawer.render()
         self.drawer.tick(self.render_dt_msec)
+
+    def get_diagnostics(self, paths, prefix=''):
+        statistics = OrderedDict()
+        for stat_name in [
+            'distance_to_target',
+        ]:
+            stat_name = stat_name
+            stat = get_stat_in_paths(paths, 'env_infos', stat_name)
+            statistics.update(create_stats_ordered_dict(
+                '%s%s' % (prefix, stat_name),
+                stat,
+                always_show_all_stats=True,
+                ))
+            statistics.update(create_stats_ordered_dict(
+                'Final %s%s' % (prefix, stat_name),
+                [s[-1] for s in stat],
+                always_show_all_stats=True,
+                ))
+        return statistics
 
     """Static visualization/utility methods"""
 
@@ -232,7 +331,6 @@ class Point2DEnv(MultitaskEnv, Serializable):
             a_max=Point2DEnv.boundary_dist,
         )
 
-
     @staticmethod
     def true_states(state, actions):
         real_states = [state]
@@ -241,7 +339,6 @@ class Point2DEnv(MultitaskEnv, Serializable):
             real_states.append(next_state)
             state = next_state
         return real_states
-
 
     @staticmethod
     def plot_trajectory(ax, states, actions, goal=None):
@@ -254,7 +351,7 @@ class Point2DEnv(MultitaskEnv, Serializable):
             color = plasma_cm(float(i) / num_states)
             ax.plot(state[0], -state[1],
                     marker='o', color=color, markersize=10,
-            )
+                    )
 
         actions_x = actions[:, 0]
         actions_y = -actions[:, 1]
@@ -312,13 +409,17 @@ class Point2DEnv(MultitaskEnv, Serializable):
         if goal is not None:
             ax.plot(goal[0], -goal[1], marker='*', color='g', markersize=15)
         ax.set_ylim(
-            -Point2DEnv.boundary_dist-1,
-            Point2DEnv.boundary_dist+1,
+            -Point2DEnv.boundary_dist - 1,
+            Point2DEnv.boundary_dist + 1,
         )
         ax.set_xlim(
-            -Point2DEnv.boundary_dist-1,
-            Point2DEnv.boundary_dist+1,
+            -Point2DEnv.boundary_dist - 1,
+            Point2DEnv.boundary_dist + 1,
         )
+
+    def initialize_camera(self, init_fctn):
+        pass
+
 
 class Point2DWallEnv(Point2DEnv):
     """Point2D with walls"""
@@ -326,7 +427,7 @@ class Point2DWallEnv(Point2DEnv):
     def __init__(
             self,
             wall_shape="",
-            inner_wall_max_dist = 1,
+            inner_wall_max_dist=1,
             **kwargs
     ):
         self.quick_init(locals())
@@ -366,10 +467,21 @@ class Point2DWallEnv(Point2DEnv):
                     self.inner_wall_max_dist,
                 )
             ]
+        if wall_shape == "--":
+            self.walls = [
+                HorizontalWall(
+                    self.ball_radius,
+                    0,
+                    -self.inner_wall_max_dist,
+                    self.inner_wall_max_dist,
+                )
+            ]
+
 
 if __name__ == "__main__":
     # e = Point2DEnv()
     import matplotlib.pyplot as plt
+
     # e = Point2DWallEnv("-", render_size=84)
     e = ImageEnv(Point2DWallEnv(wall_shape="u", render_size=84))
     for i in range(10):
@@ -378,4 +490,3 @@ if __name__ == "__main__":
             e.step(np.random.rand(2))
             e.render()
             im = e.get_image()
-

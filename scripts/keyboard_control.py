@@ -44,7 +44,7 @@ char_to_action = {
 
 # env = SawyerPushAndReachXYEnv()
 # env = SawyerPushAndReachXYZEnv()
-env = SawyerReachXYEnv(reset_mode='random')
+env = SawyerReachXYEnv(reset_mode='reset_free')
 # env = SawyerReachXYZEnv()
 # env = SawyerPickAndPlaceEnv()
 NDIM = env.action_space.low.size
@@ -78,8 +78,8 @@ while True:
                 action[:3] = new_action[:3]
             else:
                 action = np.zeros(10)
-    # obs, reward, _, info = env.step(action[:NDIM])
-    env.reset()
+    obs, reward, _, info = env.step(action[:NDIM])
+    # env.reset()
     # env.set_to_goal(env.sample_goal())
     env.render()
     if done:

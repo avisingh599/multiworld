@@ -127,7 +127,7 @@ class SawyerReachXYZEnv(SawyerXYZEnv, MultitaskEnv):
         return self._get_obs()
 
     def _reset_hand(self):
-        if self.reset_mode == 'fixed':
+        if self.reset_mode == 'fixed' or self.reset_mode == 'reset_free':
             reset_pos = [0, 0.5, 0.02]
             for _ in range(10):
                 self.data.set_mocap_pos('mocap', np.array(reset_pos))
@@ -140,12 +140,14 @@ class SawyerReachXYZEnv(SawyerXYZEnv, MultitaskEnv):
                 self.data.set_mocap_quat('mocap', np.array([1, 0, 1, 0]))
                 self.do_simulation(None, self.frame_skip)
             self.set_to_goal(self.sample_goal())
-        else:
-            raise NotImplementedError()
 
     def reset(self, resample_on_reset=True):
+        self.curr_pos = self.get_endeff_pos()
         self.sim.reset()
         ob = self.reset_model(resample_on_reset=resample_on_reset)
+        if self.reset_mode=='reset_free':
+            self.set_to_goal({'state_desired_goal':self.curr_pos})
+            ob = self._get_obs()
         if self.viewer is not None:
             self.viewer_setup()
         return ob

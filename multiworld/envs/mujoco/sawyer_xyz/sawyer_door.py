@@ -151,7 +151,9 @@ class SawyerDoorEnv(
             )
         elif self.reward_type == 'angle_difference':
             r = - angle_diff * self.target_angle_scale
-
+        elif self.reward_type =='angle_success':
+            r = (angle_diff < self.indicator_threshold[0]).astype(
+                float)
         elif self.reward_type == 'hand_success':
             r = -(angle_diff > self.indicator_threshold[0] or pos_dist >
                   self.indicator_threshold[1]).astype(float)
@@ -228,7 +230,7 @@ class SawyerDoorEnv(
         }
 
     def set_to_goal_angle(self, angle):
-        self._state_goal = angle.copy()
+        self._state_goal[-1] = angle.copy()
         qpos = self.data.qpos.flat.copy()
         qvel = self.data.qvel.flat.copy()
         qpos[-1] = angle.copy()
@@ -239,7 +241,7 @@ class SawyerDoorEnv(
         for _ in range(10):
             self.data.set_mocap_pos('mocap', np.array(xyz))
             self.data.set_mocap_quat('mocap', np.array([1, 0, 1, 0]))
-            u = np.zeros(7)
+            u = np.zeros(8)
             self.do_simulation(u, self.frame_skip)
 
     def get_goal(self):

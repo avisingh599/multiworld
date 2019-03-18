@@ -38,17 +38,6 @@ Usage:
         <material name="navy_blue" shininess="0.3" rgba="0.9 0.9 0.9 1" specular="1" texture="navy_blue"/>
         <material name="wood_material" rgba="1 1 1 1" shininess="0.1" specular="0.4" texture="wood_texture" />
         <material name="table_material" rgba="1 1 1 1" shininess="0.1" specular="0.4" texture="table_texture" />
-
-        <mesh name="pedestal" file="pedestal.stl" />
-        <mesh name="base" file="base.stl" />
-        <mesh name="l0" file="l0.stl" />
-        <mesh name="head" file="head.stl" />
-        <mesh name="l1" file="l1.stl" />
-        <mesh name="l2" file="l2.stl" />
-        <mesh name="l3" file="l3.stl" />
-        <mesh name="l4" file="l4.stl" />
-        <mesh name="l5" file="l5.stl" />
-        <mesh name="l6" file="l6.stl" />
     </asset>
 
     <visual>

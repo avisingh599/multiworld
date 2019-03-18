@@ -14,12 +14,13 @@ def register_goal_example_envs():
     """
     Door pull open tasks
     """
+    #TODO Avi: A lot of code repition here that we can get rid of
 
     register(
         id='BaseSawyerDoorPullEnv-v0',
         entry_point='multiworld.envs.mujoco.sawyer_xyz.sawyer_door:SawyerDoorEnv',
         tags={
-            'git-commit-hash': '74eacf3',
+            'git-commit-hash': '42e92fe',
             'author': 'avi'
         },
         kwargs={
@@ -37,18 +38,41 @@ def register_goal_example_envs():
 
     register(
         id='BaseSawyerPushSidewaysEnv-v0',
-        entry_point='multiworld.envs.mujoco.sawyer_xyz.sawyer_push_and_reach_env:SawyerPushAndReachXYEnv',
+        entry_point='multiworld.envs.mujoco.sawyer_xyz.sawyer_push_and_reach_env:SawyerPushAndReachTargetObjectXYEnv',
         tags={
-            'git-commit-hash': '74eacf3',
+            'git-commit-hash': '42e92fe',
             'author': 'avi'
         },
         kwargs={
             'fix_goal': True,
-            'fixed_goal': (0.0, 0.6, 0.02, -0.15, 0.6),
+            'fixed_goal': (-0.1, 0.6, 0.05, -0.15, 0.6),
             'indicator_threshold': 0.03,
             'reward_type': 'puck_success',
             'puck_radius': 0.05,
             'reset_free': False,
+            'xml_path': 'sawyer_xyz/sawyer_push_mug_to_coaster.xml',
+            'hide_goal_markers': True,
+            'puck_random_init': False,
+        }
+        )
+
+    register(
+        id='BaseSawyerPushForwardEnv-v0',
+        entry_point='multiworld.envs.mujoco.sawyer_xyz.sawyer_push_and_reach_env:SawyerPushAndReachTargetObjectXYEnv',
+        tags={
+            'git-commit-hash': '42e92fe',
+            'author': 'avi'
+        },
+        kwargs={
+            'fix_goal': True,
+            'fixed_goal': (0.0, 0.7, 0.05, 0.0, 0.75),
+            'indicator_threshold': 0.03,
+            'reward_type': 'puck_success',
+            'puck_radius': 0.05,
+            'reset_free': False,
+            'xml_path': 'sawyer_xyz/sawyer_push_mug_to_coaster.xml',
+            'hide_goal_markers': True,
+            'puck_random_init': True,
         }
         )
 
@@ -56,7 +80,7 @@ def register_goal_example_envs():
         id='StateSawyerDoorPullEnv-v0',
         entry_point=create_state_sawyer_door_pull_v0,
         tags={
-            'git-commit-hash': '74eacf3',
+            'git-commit-hash': '42e92fe',
             'author': 'avi'
         },
         )
@@ -65,7 +89,25 @@ def register_goal_example_envs():
         id='Image84SawyerDoorPullEnv-v0',
         entry_point=create_image_84_sawyer_door_pull_v0,
         tags={
-            'git-commit-hash': '74eacf3',
+            'git-commit-hash': '42e92fe',
+            'author': 'avi'
+        },
+        )
+
+    register(
+        id='StateSawyerPushForwardEnv-v0',
+        entry_point=create_state_sawyer_push_forward_v0,
+        tags={
+            'git-commit-hash': '42e92fe',
+            'author': 'avi'
+        },
+        )
+
+    register(
+        id='Image84SawyerPushForwardEnv-v0',
+        entry_point=create_image_84_sawyer_push_forward_v0,
+        tags={
+            'git-commit-hash': '42e92fe',
             'author': 'avi'
         },
         )
@@ -74,7 +116,7 @@ def register_goal_example_envs():
         id='StateSawyerPushSidewaysEnv-v0',
         entry_point=create_state_sawyer_push_sideways_v0,
         tags={
-            'git-commit-hash': '74eacf3',
+            'git-commit-hash': '42e92fe',
             'author': 'avi'
         },
         )
@@ -83,10 +125,28 @@ def register_goal_example_envs():
         id='Image84SawyerPushSidewaysEnv-v0',
         entry_point=create_image_84_sawyer_push_sideways_v0,
         tags={
-            'git-commit-hash': '74eacf3',
+            'git-commit-hash': '42e92fe',
             'author': 'avi'
         },
         )
+
+def create_state_sawyer_push_forward_v0():
+    from multiworld.core.flat_goal_env import FlatGoalEnv
+    wrapped_env = gym.make('BaseSawyerPushForwardEnv-v0')
+    return FlatGoalEnv(wrapped_env, obs_keys=['observation'])
+
+def create_image_84_sawyer_push_forward_v0():
+    from multiworld.core.flat_goal_env import FlatGoalEnv
+    from multiworld.core.image_env import ImageEnv
+    from multiworld.envs.mujoco.cameras import sawyer_pusher_camera_upright_v2
+    import numpy as np
+    wrapped_env = gym.make('BaseSawyerPushForwardEnv-v0')
+    image_env = ImageEnv(
+        wrapped_env,
+        init_camera=sawyer_pusher_camera_upright_v2,
+        normalize=True,
+        )
+    return FlatGoalEnv(image_env, obs_keys=['image_observation'])
 
 def create_state_sawyer_push_sideways_v0():
     from multiworld.core.flat_goal_env import FlatGoalEnv

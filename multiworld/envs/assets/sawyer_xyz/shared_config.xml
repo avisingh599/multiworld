@@ -15,23 +15,35 @@ Usage:
 
 <mujoco>
     <asset>
-        <mesh name="pedestal" file="pedestal.stl" />
-        <mesh name="base" file="base.stl" />
-        <mesh name="l0" file="l0.stl" />
-        <mesh name="head" file="head.stl" />
-        <mesh name="l1" file="l1.stl" />
-        <mesh name="l2" file="l2.stl" />
-        <mesh name="l3" file="l3.stl" />
-        <mesh name="l4" file="l4.stl" />
-        <mesh name="l5" file="l5.stl" />
-        <mesh name="l6" file="l6.stl" />
+        <mesh name="pedestal" file="sawyer/pedestal.stl" />
+        <mesh name="base" file="sawyer/base.stl" />
+        <mesh name="l0" file="sawyer/l0.stl" />
+        <mesh name="head" file="sawyer/head.stl" />
+        <mesh name="l1" file="sawyer/l1.stl" />
+        <mesh name="l2" file="sawyer/l2.stl" />
+        <mesh name="l3" file="sawyer/l3.stl" />
+        <mesh name="l4" file="sawyer/l4.stl" />
+        <mesh name="l5" file="sawyer/l5.stl" />
+        <mesh name="l6" file="sawyer/l6.stl" />
+
+        <mesh name="mug_mesh" file="objects/mug.stl"  scale="0.0006 0.0006 0.0006"/>
+        <texture file="marble.png" name="marble" />
+        <texture file="navy_blue.png" name="navy_blue" />
+        <texture file="wood_light.png" name="table_texture" type="2d"/>
+        <texture file="wood_light.png" name="wood_texture"/>
+
+
+        <material name="marble" shininess="0.3" rgba="0.9 0.9 0.9 1" specular="1" texture="marble"/>
+        <material name="navy_blue" shininess="0.3" rgba="0.9 0.9 0.9 1" specular="1" texture="navy_blue"/>
+        <material name="wood_material" rgba="1 1 1 1" shininess="0.1" specular="0.4" texture="wood_texture" />
+        <material name="table_material" rgba="1 1 1 1" shininess="0.1" specular="0.4" texture="table_texture" />
     </asset>
 
     <visual>
         <headlight ambient="0.5 0.5 0.5"  />
     </visual>
 
-    <compiler angle="radian" meshdir="../meshes/sawyer"/>
+    <compiler angle="radian" meshdir="../meshes" texturedir="../textures"/>
     <size njmax="500" nconmax="100"/>
     <option
             iterations="50"

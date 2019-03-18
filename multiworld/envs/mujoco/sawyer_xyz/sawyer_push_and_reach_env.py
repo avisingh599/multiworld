@@ -445,6 +445,35 @@ class SawyerPushAndReachXYEnv(SawyerPushAndReachXYZEnv):
         action = np.hstack((action, delta_z))
         return super().step(action)
 
+class SawyerPushAndReachTargetObjectXYEnv(SawyerPushAndReachXYEnv):
+    def __init__(self, *args, puck_random_init=True, **kwargs):
+        self._puck_random_init = puck_random_init
+        self.quick_init(locals())
+        SawyerPushAndReachXYEnv.__init__(self, *args, **kwargs)
+
+    def _set_puck_xy(self, pos):
+        """
+        WARNING: this resets the sites (because set_state resets sights do).
+        """
+        qpos = self.data.qpos.flat.copy()
+        qvel = self.data.qvel.flat.copy()
+        qpos[8:11] = np.hstack((pos.copy(), np.array([self.init_puck_z])))
+        qpos[11:15] = np.array([1, 0, 0, 0])
+        qvel[8:15] = 0
+
+        #set target object
+        if self._state_goal is None:
+            qpos[15:18] = np.hstack((pos.copy(), np.array([self.init_puck_z])))
+        else:
+            qpos[15:18] = np.hstack((self._state_goal[3:5], np.array([self.init_puck_z])))
+
+        self.set_state(qpos, qvel)
+
+    def sample_puck_xy(self):
+        if self._puck_random_init:
+            return np.random.uniform(low=[-0.1, 0.6], high=[+0.1, 0.6])
+        else:
+            return np.array([0, 0.6])
 
 if __name__ == '__main__':
     env = SawyerPushAndReachXYEnv(num_resets_before_puck_reset=int(1e6))

@@ -21,7 +21,7 @@ Usage:
     <!--<geom name="tableTop" type="box" pos="0 0.6 -0.45" size="0.4 0.2 0.45"-->
           <!--rgba=".6 .6 .5 1" contype="15" conaffinity="15" />-->
     <geom name="tableTop" type="box" pos="0 0.7 -.51" size="0.4 0.5 0.41"
-        rgba=".6 .6 .5 1" contype="15" conaffinity="15" />
+        rgba=".6 .6 .5 1" contype="15" conaffinity="15" material="table_material"/>
 
 
     <body name="base" pos="0 0 0">

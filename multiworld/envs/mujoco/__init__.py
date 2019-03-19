@@ -45,7 +45,7 @@ def register_goal_example_envs():
         },
         kwargs={
             'fix_goal': True,
-            'fixed_goal': (-0.1, 0.6, 0.05, -0.15, 0.6),
+            'fixed_goal': (0.0, 0.6, 0.05, -0.15, 0.6),
             'indicator_threshold': 0.03,
             'reward_type': 'puck_success',
             'puck_radius': 0.01,
@@ -65,7 +65,7 @@ def register_goal_example_envs():
         },
         kwargs={
             'fix_goal': True,
-            'fixed_goal': (0.0, 0.7, 0.05, 0.0, 0.75),
+            'fixed_goal': (0.0, 0.6, 0.05, 0.0, 0.75),
             'indicator_threshold': 0.03,
             'reward_type': 'puck_success',
             'puck_radius': 0.01,

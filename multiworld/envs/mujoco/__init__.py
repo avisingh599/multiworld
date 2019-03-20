@@ -179,16 +179,18 @@ def create_image_48_sawyer_door_pull_hook_v0():
     import numpy as np
 
     wrapped_env = gym.make('BaseSawyerDoorHookEnv-v0')
+    imsize=48
+    imsize_flat=imsize*imsize*3
     image_env = ImageEnv(
         wrapped_env=wrapped_env,
-        imsize=48,
+        imsize=imsize,
         init_camera=sawyer_door_env_camera_v0,
         normalize=True,
         presampled_goals={
         'state_desired_goal': 
         np.expand_dims(wrapped_env.fixed_goal, axis=0),
         'image_desired_goal':
-        np.zeros((1, 21168))},
+        np.zeros((1, imsize_flat))},
         non_presampled_goal_img_is_garbage=True,
         )
     return FlatGoalEnv(image_env, obs_keys=['image_observation'])

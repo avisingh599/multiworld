@@ -27,7 +27,7 @@ def register_goal_example_envs():
             'fix_goal': True,
             'fixed_goal': (0.05, 0.50, 0.15, 0.6),
             'indicator_threshold': (0.05, 0.03),
-            'reward_type': 'angle_success_positive',
+            'reward_type': 'angle_success',
             'hand_low': (-0.1, 0.45, 0.1),
             'hand_high': (0.05, 0.65, .25),
             'min_angle': 0.0,
@@ -177,7 +177,7 @@ def create_image_48_sawyer_door_pull_hook_v0():
     from multiworld.core.image_env import ImageEnv
     from multiworld.envs.mujoco.cameras import sawyer_door_env_camera_v0
     import numpy as np
-    
+
     wrapped_env = gym.make('BaseSawyerDoorHookEnv-v0')
     image_env = ImageEnv(
         wrapped_env=wrapped_env,

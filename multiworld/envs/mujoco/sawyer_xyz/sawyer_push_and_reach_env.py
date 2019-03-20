@@ -344,10 +344,14 @@ class SawyerPushAndReachXYZEnv(MultitaskEnv, SawyerXYZEnv):
             r = -hand_distances
         elif self.reward_type == 'hand_success':
             r = -(hand_distances > self.indicator_threshold).astype(float)
+        elif self.reward_type == 'hand_success_positive':
+            r = (hand_distances < self.indicator_threshold).astype(float)
         elif self.reward_type == 'puck_distance':
             r = -puck_distances
         elif self.reward_type == 'puck_success':
             r = -(puck_distances > self.indicator_threshold).astype(float)
+        elif self.reward_type == 'puck_success_positive':
+            r = (puck_distances < self.indicator_threshold).astype(float)
         elif self.reward_type == 'hand_and_puck_distance':
             r = -(puck_distances + hand_distances)
         elif self.reward_type == 'state_distance':

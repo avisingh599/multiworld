@@ -14,7 +14,7 @@ def register_goal_example_envs():
     """
     Door pull open tasks
     """
-    #TODO Avi: A lot of code repition here that we can get rid of
+    #TODO Avi: A lot of code repetition here that we can get rid of
 
     register(
         id='BaseSawyerDoorHookEnv-v0',
@@ -177,9 +177,10 @@ def create_image_48_sawyer_door_pull_hook_v0():
     from multiworld.core.image_env import ImageEnv
     from multiworld.envs.mujoco.cameras import sawyer_door_env_camera_v0
     import numpy as np
-
+    
+    wrapped_env = gym.make('BaseSawyerDoorHookEnv-v0')
     image_env = ImageEnv(
-        wrapped_env = gym.make('BaseSawyerDoorHookEnv-v0'),
+        wrapped_env=wrapped_env,
         imsize=48,
         init_camera=sawyer_door_env_camera_v0,
         normalize=True,

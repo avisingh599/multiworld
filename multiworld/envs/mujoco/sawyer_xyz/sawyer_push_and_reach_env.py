@@ -298,7 +298,7 @@ class SawyerPushAndReachXYZEnv(MultitaskEnv, SawyerXYZEnv):
         hand_goal_xy = goal['state_desired_goal'][:2]
         puck_goal_xy = goal['state_desired_goal'][3:]
         dist = np.linalg.norm(hand_goal_xy-puck_goal_xy)
-        while(dist<=self.puck_radius):
+        while(dist<=self.puck_radius and not self.fix_goal):
             goal = self.sample_goal()
             hand_goal_xy = goal['state_desired_goal'][:2]
             puck_goal_xy = goal['state_desired_goal'][3:]

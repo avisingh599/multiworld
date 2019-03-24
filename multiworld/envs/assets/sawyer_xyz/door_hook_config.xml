@@ -36,7 +36,8 @@ Usage:
         <texture file="../textures/wood_light.png" name="table_texture" type="2d"/>
         <material name="table_material" rgba="1 1 1 1" shininess="0.1" specular="0.4" texture="table_texture" />
 
-        <texture type="skybox" builtin="gradient" rgb1=".8 1 1" rgb2=".6 1 1" width="32" height="32"></texture>
+        <texture type="skybox" builtin="gradient" rgb1=".51 .50 .48" rgb2=".51 .50 .48" width="32" height="32"></texture>
+
         <mesh name="pedestal" file="pedestal.stl" />
         <mesh name="base" file="base.stl" />
         <mesh name="l0" file="l0.stl" />

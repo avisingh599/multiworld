@@ -87,7 +87,7 @@ def register_goal_example_envs():
         },
         kwargs={
                 'hand_low': (0.0, 0.55, 0.01),
-                'hand_high': (0.0, 0.65, 0.13),
+                'hand_high': (0.0, 0.65, 0.25),
                 'action_scale': 0.02,
                 'indicator_threshold': 0.03,
                 'hide_goal_markers': True,
@@ -95,8 +95,9 @@ def register_goal_example_envs():
                 'reward_type': 'obj_distance',
                 'p_obj_in_hand': .75,
                 'fix_goal': True,
-                'fixed_goal': (0.0, 0.6, 0.10, 0., 0.6, 0.07),
-                'presampled_goals': {'state_desired_goal': np.asarray((0.0, 0.6, 0.10, 0., 0.6, 0.07)).reshape(1,6)},
+                'fixed_goal': (0.0, 0.6, 0.10, 0., 0.6, 0.20),
+                'presampled_goals': {'state_desired_goal': np.asarray((0.0, 0.6, 0.10, 0., 0.6, 0.20)).reshape(1,6)},
+                'obj_init_positions': ((0, 0.6, 0.02), (0, 0.62, 0.02), (0, 0.65, 0.02), (0, 0.57, 0.02), (0, 0.55, 0.02))
         }
         )
 

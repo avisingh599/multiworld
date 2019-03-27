@@ -2,6 +2,8 @@ import gym
 from gym.envs.registration import register
 import logging
 
+import numpy as np
+
 LOGGER = logging.getLogger(__name__)
 
 _REGISTERED = False
@@ -77,6 +79,28 @@ def register_goal_example_envs():
         )
 
     register(
+        id='BaseSawyerPickAndPlaceEnv-v0',
+        entry_point='multiworld.envs.mujoco.sawyer_xyz.sawyer_pick_and_place:SawyerPickAndPlaceEnvYZ',
+        tags={
+            'git-commit-hash': '42e92fe',
+            'author': 'avi'
+        },
+        kwargs={
+                'hand_low': (0.0, 0.55, 0.01),
+                'hand_high': (0.0, 0.65, 0.13),
+                'action_scale': 0.02,
+                'indicator_threshold': 0.03,
+                'hide_goal_markers': True,
+                'num_goals_presampled': 1,
+                'reward_type': 'obj_distance',
+                'p_obj_in_hand': .75,
+                'fix_goal': True,
+                'fixed_goal': (0.0, 0.6, 0.10, 0., 0.6, 0.07),
+                'presampled_goals': {'state_desired_goal': np.asarray((0.0, 0.6, 0.10, 0., 0.6, 0.07)).reshape(1,6)},
+        }
+        )
+
+    register(
         id='StateSawyerDoorPullHookEnv-v0',
         entry_point=create_state_sawyer_door_pull_hook_v0,
         tags={
@@ -130,6 +154,48 @@ def register_goal_example_envs():
         },
         )
 
+    register(
+        id='StateSawyerPickAndPlaceEnv-v0',
+        entry_point=create_state_sawyer_pick_and_place_v0,
+        tags={
+            'git-commit-hash': '42e92fe',
+            'author': 'avi'
+        },
+        )
+
+    register(
+        id='Image48SawyerPickAndPlaceEnv-v0',
+        entry_point=create_image_48_sawyer_pick_and_place_v0,
+        tags={
+            'git-commit-hash': '42e92fe',
+            'author': 'avi'
+        },
+        )
+
+
+def create_state_sawyer_pick_and_place_v0():
+    from multiworld.core.flat_goal_env import FlatGoalEnv
+    wrapped_env = gym.make('BaseSawyerPickAndPlaceEnv-v0')
+    return FlatGoalEnv(wrapped_env, obs_keys=['observation'])
+
+def create_image_48_sawyer_pick_and_place_v0():
+    from multiworld.core.flat_goal_env import FlatGoalEnv
+    from multiworld.core.image_env import ImageEnv
+    from multiworld.envs.mujoco.cameras import sawyer_pick_and_place_camera
+    wrapped_env = gym.make('BaseSawyerPickAndPlaceEnv-v0')
+    state_desired_goal = wrapped_env.fixed_goal
+    goal_dim = len(state_desired_goal)
+    imsize = 48
+    image_env = ImageEnv(
+        wrapped_env=wrapped_env,
+        imsize=imsize,
+        init_camera=sawyer_pick_and_place_camera,
+        normalize=True,
+        presampled_goals={'state_desired_goal': state_desired_goal.reshape(1,goal_dim),
+                          'image_desired_goal': np.zeros((1, imsize*imsize*3))},
+        )
+    return FlatGoalEnv(image_env, obs_keys=['image_observation'])
+
 def create_state_sawyer_push_forward_v0():
     from multiworld.core.flat_goal_env import FlatGoalEnv
     wrapped_env = gym.make('BaseSawyerPushForwardEnv-v0')
@@ -139,7 +205,6 @@ def create_image_48_sawyer_push_forward_v0():
     from multiworld.core.flat_goal_env import FlatGoalEnv
     from multiworld.core.image_env import ImageEnv
     from multiworld.envs.mujoco.cameras import sawyer_pusher_camera_upright_v2
-    import numpy as np
     image_env = ImageEnv(
         wrapped_env=gym.make('BaseSawyerPushForwardEnv-v0'),
         imsize=48,
@@ -157,7 +222,6 @@ def create_image_48_sawyer_push_sideways_v0():
     from multiworld.core.flat_goal_env import FlatGoalEnv
     from multiworld.core.image_env import ImageEnv
     from multiworld.envs.mujoco.cameras import sawyer_pusher_camera_upright_v2
-    import numpy as np
     
     image_env = ImageEnv(
         wrapped_env = gym.make('BaseSawyerPushSidewaysEnv-v0'),

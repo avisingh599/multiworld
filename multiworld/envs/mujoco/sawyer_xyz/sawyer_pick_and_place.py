@@ -106,7 +106,7 @@ class SawyerPickAndPlaceEnv(MultitaskEnv, SawyerXYZEnv):
 
         if presampled_goals is not None:
             self._presampled_goals = presampled_goals
-            self.num_goals_presampled = len(list(self._presampled_goals.values)[0])
+            self.num_goals_presampled = len(list(self._presampled_goals.values())[0])
         else:
             # presampled_goals will be created when sample_goal is first called
             self._presampled_goals = None
@@ -213,7 +213,7 @@ class SawyerPickAndPlaceEnv(MultitaskEnv, SawyerXYZEnv):
             goal[:3]
         )
         self.data.site_xpos[self.model.site_name2id('obj-goal-site')] = (
-            goal[3:]
+            goal[3:6]
         )
         if self.hide_goal_markers:
             self.data.site_xpos[self.model.site_name2id('hand-goal-site'), 2] = (
@@ -321,9 +321,9 @@ class SawyerPickAndPlaceEnv(MultitaskEnv, SawyerXYZEnv):
         achieved_goals = obs['state_achieved_goal']
         desired_goals = obs['state_desired_goal']
         hand_pos = achieved_goals[:, :3]
-        obj_pos = achieved_goals[:, 3:]
+        obj_pos = achieved_goals[:, 3:6]
         hand_goals = desired_goals[:, :3]
-        obj_goals = desired_goals[:, 3:]
+        obj_goals = desired_goals[:, 3:6]
 
         hand_distances = np.linalg.norm(hand_goals - hand_pos, axis=1)
         obj_distances = np.linalg.norm(obj_goals - obj_pos, axis=1)

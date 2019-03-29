@@ -296,7 +296,9 @@ class SawyerDoorHookRandomInitEnv(SawyerDoorHookEnv):
         if not self.reset_free:
             self._reset_hand()
             for _ in range(10):
-                self.step(np.asarray([0., 0., 1.0]))
+                self.step(np.asarray([0., -1., 1.0]))
+            for _ in range(10):
+                self.step(np.asarray([0., -1., 0]))
             if np.random.uniform(low=0., high=1.) > 0.5:
                 self._set_door_pos(np.random.uniform(low=0., high=0.3))
             else:

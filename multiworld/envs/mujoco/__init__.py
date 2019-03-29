@@ -30,7 +30,7 @@ def register_goal_example_envs():
             'fixed_goal': (0.02, 0.45, 0.15, 0.80),
             'indicator_threshold': (0.1, 0.05),
             'reward_type': 'angle_success',
-            'hand_low': (-0.1, 0.40, 0.1),
+            'hand_low': (-0.1, 0.30, 0.1),
             'hand_high': (0.05, 0.65, .40),
             'min_angle': 0.0,
             'max_angle': 0.83,

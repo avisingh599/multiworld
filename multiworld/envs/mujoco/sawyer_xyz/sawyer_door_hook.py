@@ -289,3 +289,19 @@ class SawyerDoorHookEnv(
         base_state, goal = state
         super().set_env_state(base_state)
         self._state_goal = goal
+
+
+class SawyerDoorHookRandomInitEnv(SawyerDoorHookEnv):
+    def reset_model(self):
+        if not self.reset_free:
+            self._reset_hand()
+            for _ in range(10):
+                self.step(np.asarray([0., 0., 1.0]))
+            if np.random.uniform(low=0., high=1.) > 0.5:
+                self._set_door_pos(np.random.uniform(low=0., high=0.3))
+            else:
+                self._set_door_pos(np.random.uniform(0))
+        goal = self.sample_goal()
+        self.set_goal(goal)
+        self.reset_mocap_welds()
+        return self._get_obs()

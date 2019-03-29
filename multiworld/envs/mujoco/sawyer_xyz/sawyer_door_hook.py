@@ -300,7 +300,7 @@ class SawyerDoorHookRandomInitEnv(SawyerDoorHookEnv):
             if np.random.uniform(low=0., high=1.) > 0.5:
                 self._set_door_pos(np.random.uniform(low=0., high=0.3))
             else:
-                self._set_door_pos(np.random.uniform(0))
+                self._set_door_pos(0)
         goal = self.sample_goal()
         self.set_goal(goal)
         self.reset_mocap_welds()

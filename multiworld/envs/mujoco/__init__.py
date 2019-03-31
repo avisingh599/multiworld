@@ -92,7 +92,7 @@ def register_goal_example_envs():
                 'indicator_threshold': 0.03,
                 'hide_goal_markers': True,
                 'num_goals_presampled': 1,
-                'reward_type': 'obj_distance',
+                'reward_type': 'obj_success_positive',
                 'p_obj_in_hand': .75,
                 'fix_goal': True,
                 'fixed_goal': (0.0, 0.6, 0.10, 0., 0.6, 0.20),

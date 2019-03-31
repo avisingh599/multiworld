@@ -339,6 +339,8 @@ class SawyerPickAndPlaceEnv(MultitaskEnv, SawyerXYZEnv):
             r = -obj_distances
         elif self.reward_type == 'obj_success':
             r = -(obj_distances > self.indicator_threshold).astype(float)
+        elif self.reward_type == 'obj_success_positive':
+            r = (obj_distances < self.indicator_threshold).astype(float)
         elif self.reward_type == 'hand_and_obj_distance':
             r = -hand_and_obj_distances
         elif self.reward_type == 'touch_and_obj_distance':

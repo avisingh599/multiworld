@@ -182,7 +182,7 @@ def create_state_sawyer_pick_and_place_v0():
 def create_image_48_sawyer_pick_and_place_v0():
     from multiworld.core.flat_goal_env import FlatGoalEnv
     from multiworld.core.image_env import ImageEnv
-    from multiworld.envs.mujoco.cameras import sawyer_pick_and_place_camera
+    from multiworld.envs.mujoco.cameras import sawyer_pick_and_place_camera_zoomed
     wrapped_env = gym.make('BaseSawyerPickAndPlaceEnv-v0')
     state_desired_goal = wrapped_env.fixed_goal
     goal_dim = len(state_desired_goal)
@@ -190,7 +190,7 @@ def create_image_48_sawyer_pick_and_place_v0():
     image_env = ImageEnv(
         wrapped_env=wrapped_env,
         imsize=imsize,
-        init_camera=sawyer_pick_and_place_camera,
+        init_camera=sawyer_pick_and_place_camera_zoomed,
         normalize=True,
         presampled_goals={'state_desired_goal': state_desired_goal.reshape(1,goal_dim),
                           'image_desired_goal': np.zeros((1, imsize*imsize*3))},

@@ -112,6 +112,14 @@ def sawyer_pick_and_place_camera_slanted_angle(camera):
     camera.azimuth = 180
     camera.trackbodyid = 0
 
+def sawyer_pick_and_place_camera_slanted_angle_zoomed(camera):
+    camera.lookat[0] = 0.0
+    camera.lookat[1] = .67
+    camera.lookat[2] = .1
+    camera.distance = .52
+    camera.elevation = -37.85
+    camera.azimuth = 180
+    camera.trackbodyid = 0
 
 def sawyer_xyz_reacher_camera_v0(camera):
     camera.lookat[0] = 0

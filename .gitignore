@@ -110,3 +110,4 @@ venv.bak/
 auto_gen*.xml
 
 MUJOCO_LOG.TXT
+scripts/*_test.py

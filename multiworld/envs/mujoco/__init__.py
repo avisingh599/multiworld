@@ -22,7 +22,7 @@ def register_goal_example_envs():
         id='BaseSawyerDoorHookEnv-v0',
         entry_point='multiworld.envs.mujoco.sawyer_xyz.sawyer_door_hook:SawyerDoorHookRandomInitEnv',
         tags={
-            'git-commit-hash': '42e92fe',
+            'git-commit-hash': '0de5200',
             'author': 'avi'
         },
         kwargs={
@@ -42,7 +42,7 @@ def register_goal_example_envs():
         id='BaseSawyerPushSidewaysEnv-v0',
         entry_point='multiworld.envs.mujoco.sawyer_xyz.sawyer_push_and_reach_env:SawyerPushAndReachTargetObjectXYEnv',
         tags={
-            'git-commit-hash': '42e92fe',
+            'git-commit-hash': '0de5200',
             'author': 'avi'
         },
         kwargs={
@@ -62,7 +62,7 @@ def register_goal_example_envs():
         id='BaseSawyerPushForwardEnv-v0',
         entry_point='multiworld.envs.mujoco.sawyer_xyz.sawyer_push_and_reach_env:SawyerPushAndReachTargetObjectXYEnv',
         tags={
-            'git-commit-hash': '42e92fe',
+            'git-commit-hash': '0de5200',
             'author': 'avi'
         },
         kwargs={
@@ -82,7 +82,7 @@ def register_goal_example_envs():
         id='BaseSawyerPickAndPlaceEnv-v0',
         entry_point='multiworld.envs.mujoco.sawyer_xyz.sawyer_pick_and_place:SawyerPickAndPlaceEnvYZ',
         tags={
-            'git-commit-hash': '42e92fe',
+            'git-commit-hash': '0de5200',
             'author': 'avi'
         },
         kwargs={
@@ -105,7 +105,7 @@ def register_goal_example_envs():
         id='BaseSawyerPickAndPlace3DEnv-v0',
         entry_point='multiworld.envs.mujoco.sawyer_xyz.sawyer_pick_and_place:SawyerPickAndPlaceEnv',
         tags={
-            'git-commit-hash': '42e92fe',
+            'git-commit-hash': '0de5200',
             'author': 'avi'
         },
         kwargs={
@@ -130,7 +130,7 @@ def register_goal_example_envs():
         id='StateSawyerDoorPullHookEnv-v0',
         entry_point=create_state_sawyer_door_pull_hook_v0,
         tags={
-            'git-commit-hash': '42e92fe',
+            'git-commit-hash': '0de5200',
             'author': 'avi'
         },
         )
@@ -139,7 +139,7 @@ def register_goal_example_envs():
         id='Image48SawyerDoorPullHookEnv-v0',
         entry_point=create_image_48_sawyer_door_pull_hook_v0,
         tags={
-            'git-commit-hash': '42e92fe',
+            'git-commit-hash': '0de5200',
             'author': 'avi'
         },
         )
@@ -148,7 +148,7 @@ def register_goal_example_envs():
         id='StateSawyerPushForwardEnv-v0',
         entry_point=create_state_sawyer_push_forward_v0,
         tags={
-            'git-commit-hash': '42e92fe',
+            'git-commit-hash': '0de5200',
             'author': 'avi'
         },
         )
@@ -157,7 +157,7 @@ def register_goal_example_envs():
         id='Image48SawyerPushForwardEnv-v0',
         entry_point=create_image_48_sawyer_push_forward_v0,
         tags={
-            'git-commit-hash': '42e92fe',
+            'git-commit-hash': '0de5200',
             'author': 'avi'
         },
         )
@@ -166,7 +166,7 @@ def register_goal_example_envs():
         id='StateSawyerPushSidewaysEnv-v0',
         entry_point=create_state_sawyer_push_sideways_v0,
         tags={
-            'git-commit-hash': '42e92fe',
+            'git-commit-hash': '0de5200',
             'author': 'avi'
         },
         )
@@ -175,7 +175,7 @@ def register_goal_example_envs():
         id='Image48SawyerPushSidewaysEnv-v0',
         entry_point=create_image_48_sawyer_push_sideways_v0,
         tags={
-            'git-commit-hash': '42e92fe',
+            'git-commit-hash': '0de5200',
             'author': 'avi'
         },
         )
@@ -184,7 +184,7 @@ def register_goal_example_envs():
         id='StateSawyerPickAndPlaceEnv-v0',
         entry_point=create_state_sawyer_pick_and_place_v0,
         tags={
-            'git-commit-hash': '42e92fe',
+            'git-commit-hash': '0de5200',
             'author': 'avi'
         },
         )
@@ -193,7 +193,7 @@ def register_goal_example_envs():
         id='Image48SawyerPickAndPlaceEnv-v0',
         entry_point=create_image_48_sawyer_pick_and_place_v0,
         tags={
-            'git-commit-hash': '42e92fe',
+            'git-commit-hash': '0de5200',
             'author': 'avi'
         },
         )
@@ -202,7 +202,7 @@ def register_goal_example_envs():
         id='StateSawyerPickAndPlace3DEnv-v0',
         entry_point=create_state_sawyer_pick_and_place_3d_v0,
         tags={
-            'git-commit-hash': '42e92fe',
+            'git-commit-hash': '0de5200',
             'author': 'avi'
         },
         )
@@ -211,7 +211,7 @@ def register_goal_example_envs():
         id='Image48SawyerPickAndPlace3DEnv-v0',
         entry_point=create_image_48_sawyer_pick_and_place_3d_v0,
         tags={
-            'git-commit-hash': '42e92fe',
+            'git-commit-hash': '0de5200',
             'author': 'avi'
         },
         )

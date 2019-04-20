@@ -19,8 +19,10 @@ class FlatGoalEnv(ProxyEnv):
             obs_keys = ['observation']
         if goal_keys is None:
             goal_keys = ['desired_goal']
-        if append_goal_to_obs:
-            obs_keys += goal_keys
+
+        self._append_goal_to_obs = append_goal_to_obs
+        # if append_goal_to_obs:
+        #     obs_keys += goal_keys
         for k in obs_keys:
             assert k in self.wrapped_env.observation_space.spaces
         for k in goal_keys:
@@ -30,14 +32,20 @@ class FlatGoalEnv(ProxyEnv):
         self.obs_keys = obs_keys
         self.goal_keys = goal_keys
         # TODO: handle nested dict
+
+        if self._append_goal_to_obs:
+            keys = self.obs_keys + self.goal_keys
+        else:
+            keys = self.obs_keys
+
         self.observation_space = Box(
             np.hstack([
                 self.wrapped_env.observation_space.spaces[k].low
-                for k in obs_keys
+                for k in keys
             ]),
             np.hstack([
                 self.wrapped_env.observation_space.spaces[k].high
-                for k in obs_keys
+                for k in keys
             ]),
         )
         self.goal_space = Box(
@@ -54,13 +62,22 @@ class FlatGoalEnv(ProxyEnv):
 
     def step(self, action):
         obs, reward, done, info = self.wrapped_env.step(action)
-        flat_obs = np.hstack([obs[k] for k in self.obs_keys])
+        if self._append_goal_to_obs:
+            keys = self.obs_keys + self.goal_keys
+        else:
+            keys = self.obs_keys
+        flat_obs = np.hstack([obs[k] for k in keys])
         return flat_obs, reward, done, info
 
     def reset(self):
         obs = self.wrapped_env.reset()
         self._goal = np.hstack([obs[k] for k in self.goal_keys])
-        return np.hstack([obs[k] for k in self.obs_keys])
+        if self._append_goal_to_obs:
+            keys = self.obs_keys + self.goal_keys
+        else:
+            keys = self.obs_keys
+        flat_obs = np.hstack([obs[k] for k in keys])
+        return flat_obs
 
     def get_goal(self):
         return self._goal

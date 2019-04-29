@@ -171,6 +171,25 @@ def register_goal_example_envs():
         )
 
     register(
+        id='BaseSawyerDoorHookMultiGoalResetFreeEnv-v0',
+        entry_point='multiworld.envs.mujoco.sawyer_xyz.sawyer_door_hook:SawyerDoorHookRandomInitEnv',
+        tags={
+            'git-commit-hash': 'TODO',
+            'author': 'avi'
+        },
+
+        kwargs=dict(
+            indicator_threshold= (0.1, 0.05),
+            reward_type= 'angle_success',
+            hand_low= (-0.1, 0.30, 0.1),
+            hand_high= (0.05, 0.65, .40),
+            min_angle= 0.0,
+            max_angle= 0.83,
+            reset_free= True,
+        )
+        )
+
+    register(
         id='StateSawyerDoorPullHookEnv-v0',
         entry_point=create_state_sawyer_door_pull_hook_v0,
         tags={
@@ -278,13 +297,22 @@ def register_goal_example_envs():
         },
         )
 
+    register(
+        id='Image48SawyerDoorHookMultiGoalResetFreeEnv-v0',
+        entry_point=create_image_48_sawyer_door_hook_multi_goal_reset_free_v0,
+        tags={
+            'git-commit-hash': 'TODO',
+            'author': 'avi'
+        },
+        )
+
 def create_image_48_sawyer_push_multi_goal_v0():
     from multiworld.core.image_env import ImageEnv
     from multiworld.envs.mujoco.cameras import sawyer_pusher_camera_upright_v2
     wrapped_env = gym.make('BaseSawyerPushMultiGoalEnv-v0')
     imsize = 48
     image_env = ImageEnv(
-                wrapped_env=wrapped_env, 
+                wrapped_env=wrapped_env,
                 imsize=imsize,
                 init_camera=sawyer_pusher_camera_upright_v2,
                 normalize=True,)
@@ -303,7 +331,27 @@ def create_image_48_sawyer_door_hook_multi_goal_v0():
         )
     goals = np.load(goal_path).item()
     image_env = ImageEnv(
-                wrapped_env=wrapped_env, 
+                wrapped_env=wrapped_env,
+                imsize=imsize,
+                init_camera=sawyer_door_env_camera_v0,
+                normalize=True,
+                presampled_goals=goals)
+    return image_env
+
+def create_image_48_sawyer_door_hook_multi_goal_reset_free_v0():
+    from multiworld.core.image_env import ImageEnv
+    from multiworld.envs.mujoco.cameras import sawyer_door_env_camera_v0
+    import os
+    wrapped_env = gym.make('BaseSawyerDoorHookMultiGoalResetFreeEnv-v0')
+    imsize = 48
+    #goal_path = 'multiworld/envs/mujoco/goals/door_goals_all.npy'
+    goal_path = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)),
+        'goals/door_goals_all.npy'
+        )
+    goals = np.load(goal_path).item()
+    image_env = ImageEnv(
+                wrapped_env=wrapped_env,
                 imsize=imsize,
                 init_camera=sawyer_door_env_camera_v0,
                 normalize=True,

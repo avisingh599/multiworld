@@ -37,6 +37,8 @@ class SawyerPushAndReachXYEnv(MujocoEnv, Serializable, MultitaskEnv):
             mocap_low=(-0.1, 0.5, 0.0),
             mocap_high=(0.1, 0.7, 0.5),
             force_puck_in_goal_space=False,
+            curriculum=False,
+            curriculum_max_resets=10000.0,
     ):
         self.quick_init(locals())
         self.reward_info = reward_info
@@ -55,7 +57,9 @@ class SawyerPushAndReachXYEnv(MujocoEnv, Serializable, MultitaskEnv):
         self.mocap_low = np.array(mocap_low)
         self.mocap_high = np.array(mocap_high)
         self.force_puck_in_goal_space = force_puck_in_goal_space
-
+        self.curriculum = curriculum
+        self.curriculum_max_resets = curriculum_max_resets
+        self.num_resets = 0
         self._goal_xyxy = self.sample_goal_xyxy()
         # MultitaskEnv.__init__(self, distance_metric_order=2)
         MujocoEnv.__init__(self, self.model_name, frame_skip=frame_skip)
@@ -238,9 +242,20 @@ class SawyerPushAndReachXYEnv(MujocoEnv, Serializable, MultitaskEnv):
         return self.model.body_names.index('hand-goal')
 
     def sample_goal_xyxy(self):
-        if self.randomize_goals:
+        if self.randomize_goals and not self.curriculum:
             hand = np.random.uniform(self.hand_goal_low, self.hand_goal_high)
             puck = np.random.uniform(self.puck_goal_low, self.puck_goal_high)
+        elif self.randomize_goals and self.curriculum:
+            fraction = self.num_resets/self.curriculum_max_resets
+            fraction = min(1., fraction)
+            hand_mean = (self.hand_goal_low + self.hand_goal_high)/2.0
+            puck_mean = (self.puck_goal_low + self.puck_goal_high)/2.0
+            hand_high = hand_mean + fraction*(self.hand_goal_high - hand_mean)
+            hand_low = hand_mean + fraction*(self.hand_goal_low - hand_mean)
+            puck_high = puck_mean + fraction*(self.puck_goal_high - puck_mean)
+            puck_low = puck_mean + fraction*(self.puck_goal_low - puck_mean)
+            hand = np.random.uniform(hand_low, hand_high)
+            puck = np.random.uniform(puck_low, puck_high)
         else:
             hand = self.fixed_hand_goal.copy()
             puck = self.fixed_puck_goal.copy()
@@ -295,6 +310,8 @@ class SawyerPushAndReachXYEnv(MujocoEnv, Serializable, MultitaskEnv):
         )
 
     def reset(self):
+        if self.curriculum:
+            self.num_resets+= 1
         velocities = self.data.qvel.copy()
         angles = np.array(self.init_angles)
         self.set_state(angles.flatten(), velocities.flatten())

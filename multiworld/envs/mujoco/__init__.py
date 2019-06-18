@@ -125,6 +125,63 @@ def register_goal_example_envs():
                 'presampled_goals': {'state_desired_goal': np.asarray((0.0, 0.6, 0.10, 0., 0.6, 0.20)).reshape(1,6)},
             }
         )
+    # two puck 
+
+    register(
+        id='BaseSawyerPushMultiGoalTwoPuckEasyEnv-v0',
+        #entry_point='multiworld.envs.mujoco.sawyer_xyz.sawyer_push_and_reach_env_two_pucks:SawyerPushAndReachXYDoublePuckEnv',
+        entry_point='multiworld.envs.mujoco.sawyer_xyz.sawyer_push_multiobj:SawyerTwoObjectEasyEnv',
+        tags={
+            'git-commit-hash': 'TODO',
+            'author': 'avi'
+        },
+
+        kwargs=dict(
+            randomize_goals=True,
+            reward_info=dict(
+                type="state_distance",
+            ),
+        )
+        )
+
+
+
+    register(
+        id='BaseSawyerPushMultiGoalTwoPuckEnv-v0',
+        #entry_point='multiworld.envs.mujoco.sawyer_xyz.sawyer_push_and_reach_env_two_pucks:SawyerPushAndReachXYDoublePuckEnv',
+        entry_point='multiworld.envs.mujoco.sawyer_xyz.sawyer_push_multiobj:SawyerTwoObjectEnv',
+        tags={
+            'git-commit-hash': 'TODO',
+            'author': 'avi'
+        },
+
+        kwargs=dict(
+            randomize_goals=True,
+            reward_info=dict(
+                type="state_distance",
+            ),
+        )
+        )
+
+    register(
+        id='BaseSawyerPushMultiGoalTwoSmallPuckEnv-v0',
+        #entry_point='multiworld.envs.mujoco.sawyer_xyz.sawyer_push_and_reach_env_two_pucks:SawyerPushAndReachXYDoublePuckEnv',
+        entry_point='multiworld.envs.mujoco.sawyer_xyz.sawyer_push_multiobj:SawyerTwoObjectEnv',
+        tags={
+            'git-commit-hash': 'TODO',
+            'author': 'avi'
+        },
+
+        kwargs=dict(
+            cylinder_radius=0.025,
+            randomize_goals=True,
+            reward_info=dict(
+                type="state_distance",
+            ),
+        )
+        )
+
+
 
 
     register(
@@ -280,6 +337,33 @@ def register_goal_example_envs():
         )
 
     register(
+        id='Image48SawyerPushMultiGoalTwoSmallPuckEasyEnv-v0',
+        entry_point=create_image_48_sawyer_push_multi_goal_two_small_puck_easy_v0,
+        tags={
+            'git-commit-hash': 'TODO',
+            'author': 'avi'
+        },
+        )
+
+    register(
+        id='Image48SawyerPushMultiGoalTwoSmallPuckEnv-v0',
+        entry_point=create_image_48_sawyer_push_multi_goal_two_small_puck_v0,
+        tags={
+            'git-commit-hash': 'TODO',
+            'author': 'avi'
+        },
+        )
+
+    register(
+        id='Image48SawyerPushMultiGoalTwoPuckEnv-v0',
+        entry_point=create_image_48_sawyer_push_multi_goal_two_puck_v0,
+        tags={
+            'git-commit-hash': 'TODO',
+            'author': 'avi'
+        },
+        )
+
+    register(
         id='Image48SawyerPushMultiGoalEnv-v0',
         entry_point=create_image_48_sawyer_push_multi_goal_v0,
         tags={
@@ -305,6 +389,44 @@ def register_goal_example_envs():
             'author': 'avi'
         },
         )
+
+
+
+def create_image_48_sawyer_push_multi_goal_two_small_puck_easy_v0():
+    from multiworld.core.image_env import ImageEnv
+    from multiworld.envs.mujoco.cameras import sawyer_pusher_camera_upright_v2
+    wrapped_env = gym.make('BaseSawyerPushMultiGoalTwoPuckEasyEnv-v0')
+    imsize = 48
+    image_env = ImageEnv(
+                wrapped_env=wrapped_env,
+                imsize=imsize,
+                init_camera=sawyer_pusher_camera_upright_v2,
+                normalize=True,)
+    return image_env
+
+def create_image_48_sawyer_push_multi_goal_two_small_puck_v0():
+    from multiworld.core.image_env import ImageEnv
+    from multiworld.envs.mujoco.cameras import sawyer_pusher_camera_upright_v2
+    wrapped_env = gym.make('BaseSawyerPushMultiGoalTwoSmallPuckEnv-v0')
+    imsize = 48
+    image_env = ImageEnv(
+                wrapped_env=wrapped_env,
+                imsize=imsize,
+                init_camera=sawyer_pusher_camera_upright_v2,
+                normalize=True,)
+    return image_env
+
+def create_image_48_sawyer_push_multi_goal_two_puck_v0():
+    from multiworld.core.image_env import ImageEnv
+    from multiworld.envs.mujoco.cameras import sawyer_pusher_camera_upright_v2
+    wrapped_env = gym.make('BaseSawyerPushMultiGoalTwoPuckEnv-v0')
+    imsize = 48
+    image_env = ImageEnv(
+                wrapped_env=wrapped_env,
+                imsize=imsize,
+                init_camera=sawyer_pusher_camera_upright_v2,
+                normalize=True,)
+    return image_env
 
 def create_image_48_sawyer_push_multi_goal_v0():
     from multiworld.core.image_env import ImageEnv

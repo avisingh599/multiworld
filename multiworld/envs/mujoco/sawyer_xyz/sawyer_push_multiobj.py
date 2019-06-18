@@ -630,3 +630,24 @@ class SawyerTwoObjectEnv(SawyerMultiobjectEnv):
 
         self.reset_mocap_welds()
         return self._get_obs()
+
+class SawyerTwoObjectEasyEnv(SawyerTwoObjectEnv):
+    def sample_goal_xyxy(self):
+        if self.randomize_goals:
+            touching = [True]
+            while any(touching):
+                r = np.random.uniform(self.low, self.high)
+                which = np.random.randint(2)
+                hand = r[:2]
+                g1 = r[2:4]
+                g2 = r[4:6]
+                if which == 0:
+                    g1 = np.array([0.05, 0.6])
+                else:
+                    g2 = np.array([-0.05, 0.6])
+
+                diffs = [hand - g1, hand - g2, g1 - g2]
+                touching = [np.linalg.norm(d) <= 0.08 for d in diffs]
+        else:
+            pos = self.FIXED_GOAL_INIT.copy()
+        return np.hstack((hand, g1, g2))

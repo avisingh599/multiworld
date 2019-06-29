@@ -102,7 +102,7 @@ class SawyerPushAndReachXYZDoublePuckEnv(MultitaskEnv, SawyerXYZEnv):
 
     @property
     def model_name(self):
-        return get_asset_full_path('sawyer_xyz/sawyer_push_two_puck.xml')
+        return get_asset_full_path('sawyer_xyz/sawyer_push_two_puck_mesh.xml')
 
     def viewer_setup(self):
         self.viewer.cam.trackbodyid = 0

@@ -191,7 +191,7 @@ class ImageEnv(ProxyEnv, MultitaskEnv):
         return image_obs.flatten()
 
     def render(self, *args, **kwargs):
-        self.wrapped_env.render(*args, **kwargs)
+        return self.wrapped_env.render(*args, **kwargs)
 
     def enable_render(self):
         self._render_local = True
@@ -204,6 +204,12 @@ class ImageEnv(ProxyEnv, MultitaskEnv):
         goal['desired_goal'] = self._img_goal
         goal['image_desired_goal'] = self._img_goal
         return goal
+
+    def set_image_goal(self, flat_goal):
+        """ This is just used purely to support relabeling, it doesn't actually change the underlying
+        state goal, so it should be used carefully.
+        """
+        self._img_goal = flat_goal
 
     def set_goal(self, goal):
         ''' Assume goal contains both image_desired_goal and any goals required for wrapped envs'''

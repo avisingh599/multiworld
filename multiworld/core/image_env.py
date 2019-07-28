@@ -21,6 +21,7 @@ class ImageEnv(ProxyEnv, MultitaskEnv):
             transpose=False,
             grayscale=False,
             normalize=False,
+            flatten=True,
             reward_type='wrapped_env',
             threshold=10,
             image_length=None,
@@ -55,6 +56,7 @@ class ImageEnv(ProxyEnv, MultitaskEnv):
         self.transpose = transpose
         self.grayscale = grayscale
         self.normalize = normalize
+        self.flatten = flatten
         self.recompute_reward = recompute_reward
         self.non_presampled_goal_img_is_garbage = non_presampled_goal_img_is_garbage
 
@@ -68,7 +70,7 @@ class ImageEnv(ProxyEnv, MultitaskEnv):
         self.channels = 1 if grayscale else 3
 
         # This is torch format rather than PIL image
-        self.image_shape = (self.imsize, self.imsize)
+        self.image_shape = (self.imsize, self.imsize, self.channels)
         # Flattened past image queue
         # init camera
         if init_camera is not None:
@@ -77,7 +79,13 @@ class ImageEnv(ProxyEnv, MultitaskEnv):
             # init_camera(viewer.cam)
             # sim.add_render_context(viewer)
         self._render_local = False
-        img_space = Box(0, 1, (self.image_length,), dtype=np.float32)
+
+        img_space = Box(
+            0,
+            1,
+            (self.image_length,) if flatten else self.image_shape,
+            dtype=np.float32 if normalize else np.uint8
+        )
         self._img_goal = img_space.sample() #has to be done for presampling
         spaces = self.wrapped_env.observation_space.spaces.copy()
         spaces['observation'] = img_space
@@ -131,6 +139,7 @@ class ImageEnv(ProxyEnv, MultitaskEnv):
 
     def reset(self):
         obs = self.wrapped_env.reset()
+
         if self.num_goals_presampled > 0:
             goal = self.sample_goal()
             self._img_goal = goal['image_desired_goal']
@@ -145,6 +154,7 @@ class ImageEnv(ProxyEnv, MultitaskEnv):
             self.wrapped_env.set_to_goal(self.wrapped_env.get_goal())
             self._img_goal = self._get_flat_img()
             self.wrapped_env.set_env_state(env_state)
+
         return self._update_obs(obs)
 
     def _get_obs(self):
@@ -178,6 +188,7 @@ class ImageEnv(ProxyEnv, MultitaskEnv):
             width=self.imsize,
             height=self.imsize,
         )
+
         if self._render_local:
             cv2.imshow('env', image_obs)
             cv2.waitKey(1)
@@ -188,7 +199,9 @@ class ImageEnv(ProxyEnv, MultitaskEnv):
             image_obs = image_obs / 255.0
         if self.transpose:
             image_obs = image_obs.transpose()
-        return image_obs.flatten()
+        if self.flatten:
+            image_obs = image_obs.flatten()
+        return image_obs
 
     def render(self, *args, **kwargs):
         return self.wrapped_env.render(*args, **kwargs)
@@ -240,6 +253,7 @@ class ImageEnv(ProxyEnv, MultitaskEnv):
     def compute_rewards(self, actions, obs):
         achieved_goals = obs['achieved_goal']
         desired_goals = obs['desired_goal']
+
         dist = np.linalg.norm(achieved_goals - desired_goals, axis=1)
         if self.reward_type=='image_distance':
             return -dist

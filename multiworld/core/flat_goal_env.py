@@ -38,46 +38,65 @@ class FlatGoalEnv(ProxyEnv):
         else:
             keys = self.obs_keys
 
-        self.observation_space = Box(
-            np.hstack([
-                self.wrapped_env.observation_space.spaces[k].low
-                for k in keys
-            ]),
-            np.hstack([
-                self.wrapped_env.observation_space.spaces[k].high
-                for k in keys
-            ]),
-        )
-        self.goal_space = Box(
-            np.hstack([
-                self.wrapped_env.observation_space.spaces[k].low
-                for k in goal_keys
-            ]),
-            np.hstack([
-                self.wrapped_env.observation_space.spaces[k].high
-                for k in goal_keys
-            ]),
-        )
+        self.observation_space = type(self.observation_space)({
+            name: space
+            for name, space in self.observation_space.spaces.items()
+            if name in self.obs_keys
+        })
+        # self.goal_space = type(self.goal_space)({
+        #     name: space
+        #     for name, space in self.goal_space.spaces.items()
+        #     if name in self.goal_keys
+        # })
+        # self.observation_space = Box(
+        #     np.hstack([
+        #         self.wrapped_env.observation_space.spaces[k].low
+        #         for k in keys
+        #     ]),
+        #     np.hstack([
+        #         self.wrapped_env.observation_space.spaces[k].high
+        #         for k in keys
+        #     ]),
+        # )
+        # self.goal_space = Box(
+        #     np.hstack([
+        #         self.wrapped_env.observation_space.spaces[k].low
+        #         for k in goal_keys
+        #     ]),
+        #     np.hstack([
+        #         self.wrapped_env.observation_space.spaces[k].high
+        #         for k in goal_keys
+        #     ]),
+        # )
         self._goal = None
 
     def step(self, action):
         obs, reward, done, info = self.wrapped_env.step(action)
+
         if self._append_goal_to_obs:
             keys = self.obs_keys + self.goal_keys
         else:
             keys = self.obs_keys
-        flat_obs = np.hstack([obs[k] for k in keys])
-        return flat_obs, reward, done, info
+
+        obs = type(obs)(((name, obs[name]) for name in keys))
+
+        # flat_obs = np.hstack([obs[k] for k in keys])
+        return obs, reward, done, info
 
     def reset(self):
         obs = self.wrapped_env.reset()
-        self._goal = np.hstack([obs[k] for k in self.goal_keys])
+
+        # self._goal = np.hstack([obs[k] for k in self.goal_keys])
+
         if self._append_goal_to_obs:
             keys = self.obs_keys + self.goal_keys
         else:
             keys = self.obs_keys
-        flat_obs = np.hstack([obs[k] for k in keys])
-        return flat_obs
+
+        obs = type(obs)(((name, obs[name]) for name in keys))
+
+        # flat_obs = np.hstack([obs[k] for k in keys])
+        return obs
 
     def get_goal(self):
         return self._goal

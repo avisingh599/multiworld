@@ -125,7 +125,7 @@ def register_goal_example_envs():
                 'presampled_goals': {'state_desired_goal': np.asarray((0.0, 0.6, 0.10, 0., 0.6, 0.20)).reshape(1,6)},
             }
         )
-    # two puck 
+    # two puck
 
     register(
         id='BaseSawyerPushMultiGoalTwoPuckEasyEnv-v0',
@@ -279,7 +279,7 @@ def register_goal_example_envs():
             'git-commit-hash': '0de5200',
             'author': 'avi'
         },
-        )
+    )
 
     register(
         id='StateSawyerPushForwardEnv-v0',
@@ -590,7 +590,7 @@ def create_image_48_sawyer_push_sideways_v0():
     from multiworld.core.flat_goal_env import FlatGoalEnv
     from multiworld.core.image_env import ImageEnv
     from multiworld.envs.mujoco.cameras import sawyer_pusher_camera_upright_v2
-    
+
     image_env = ImageEnv(
         wrapped_env = gym.make('BaseSawyerPushSidewaysEnv-v0'),
         imsize=48,
@@ -613,16 +613,20 @@ def create_image_48_sawyer_door_pull_hook_v0():
     wrapped_env = gym.make('BaseSawyerDoorHookEnv-v0')
     imsize=48
     imsize_flat=imsize*imsize*3
+    image_shape = (imsize, imsize, 3)
+
     image_env = ImageEnv(
         wrapped_env=wrapped_env,
         imsize=imsize,
         init_camera=sawyer_door_env_camera_v0,
-        normalize=True,
+        normalize=False,
+        flatten=False,
         presampled_goals={
-        'state_desired_goal': 
-        np.expand_dims(wrapped_env.fixed_goal, axis=0),
-        'image_desired_goal':
-        np.zeros((1, imsize_flat))},
+            'state_desired_goal':
+            np.expand_dims(wrapped_env.fixed_goal, axis=0),
+            'image_desired_goal':
+            np.zeros((1, *image_shape), dtype=np.uint8)
+        },
         non_presampled_goal_img_is_garbage=True,
         )
     return FlatGoalEnv(image_env, obs_keys=['image_observation'])

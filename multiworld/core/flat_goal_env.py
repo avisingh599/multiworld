@@ -81,3 +81,36 @@ class FlatGoalEnv(ProxyEnv):
 
     def get_goal(self):
         return self._goal
+
+
+class FlatEnv(ProxyEnv):
+    def __init__(
+            self,
+            wrapped_env,
+            use_robot_state=False,
+            robot_state_dims=4,
+    ):
+        self.quick_init(locals())
+        super(FlatEnv, self).__init__(wrapped_env)
+
+        self.use_robot_state = use_robot_state
+        img_dims = np.prod(self.image_shape)*3 # 3 channels
+        if self.use_robot_state:
+            total_dim = img_dims + robot_state_dims
+        else:
+            total_dim = img_dims
+        self.observation_space = Box(low=-10.0, high=10.0, shape=(total_dim,))
+
+    def step(self, action):
+        obs, reward, done, info = self.wrapped_env.step(action)
+        flat_obs = obs['image'].flatten()/255.0
+        if self.use_robot_state:
+            flat_obs = np.concatenate((flat_obs, obs['state']))
+        return flat_obs, reward, done, info
+
+    def reset(self):
+        obs = self.wrapped_env.reset()
+        flat_obs = obs['image'].flatten()/255.0
+        if self.use_robot_state:
+            flat_obs = np.concatenate((flat_obs, obs['state']))
+        return flat_obs

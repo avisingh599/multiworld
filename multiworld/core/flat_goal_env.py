@@ -114,3 +114,27 @@ class FlatEnv(ProxyEnv):
         if self.use_robot_state:
             flat_obs = np.concatenate((flat_obs, obs['state']))
         return flat_obs
+
+
+class ImageDictWrapper(ProxyEnv):
+
+    def __init__(self, env):
+        self.quick_init(locals())
+        super(ImageDictWrapper, self).__init__(env)
+
+        self.wrapped_env.wrapped_env.transpose = True
+
+        self.image_length = 48*48*3
+        img_space = Box(0, 1, (self.image_length,), dtype=np.float32)
+        spaces = {'image': img_space}
+        self.observation_space = Dict(spaces)
+
+    def step(self, action):
+        obs, rew, done, info = self.wrapped_env.step(action)
+        obs = dict(image=obs)
+        return obs, rew, done, info
+
+    def reset(self):
+        obs = self.wrapped_env.reset()
+        obs = dict(image=obs)
+        return obs
